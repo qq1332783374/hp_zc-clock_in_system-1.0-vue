@@ -22,7 +22,9 @@
     </el-menu>
 
     <div class="footer-info">
-        <span>Copyright © 2019.</span><span style="color: #2b99ff;">广现专才</span><span>All rights reserved.</span>
+        <p>
+          <span>Copyright © 2019.</span><span style="color: #2b99ff;">广现专才</span><span>All rights reserved.</span>
+        </p>
     </div>
   </div>
 </template>
@@ -80,6 +82,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 12px;
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
     border-right: 1px solid #ddd;

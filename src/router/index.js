@@ -12,7 +12,8 @@ import stuClass from 'components/class/class'
 // 学生管理
 import students from 'components/students/students'
 // 职位管理
-import jobs from 'components/jobs/jobs'
+import position from 'components/position/position'
+import stuPosition from 'components/position/pages/stuPosition'
 // 赏罚管理
 import rewards from 'components/rewards/rewards'
 // 税率调整
@@ -88,7 +89,8 @@ export default new Router({
         title: '职位管理'
       },
       children: [
-        {path: 'jobs', name: '职位管理', component: jobs, meta: {title: '职位管理'}}
+        {path: 'position', name: '职位管理', component: position, meta: {title: '职位管理'}},
+        {path: 'stuPosition', name: '学生职位管理', component: stuPosition, meta: {title: '学生职位管理'}}
       ]
     },
     {

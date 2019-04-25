@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
+import { POINT_CONVERSION_HYBRID } from 'constants';
 
 // http requser 拦截器
 axios.interceptors.request.use((config) => {
@@ -95,5 +96,70 @@ export function post(url, params ={}) {
  *  api导出
  */
 export const server = {
-
-}
+    /**
+     * 
+     * @param {Object} paramsObj 获取辅导信息
+     * methods get
+     * 
+     */
+    getTeaList (paramsObj) {
+        return get('/teacher/list')
+    },
+    /**
+     * 
+     * @param {Object} paramsObj 删除辅导员信息
+     * method get 
+     * 
+     */
+    delTeaByteaUUID (paramsObj) {
+        return get('/teacher/delete/'+ paramsObj.teaUUID)
+    },
+    /**
+     * 
+     * @param {Object} paramsObj 获取班级列表
+     * methods get 
+     * 字段 currentPage
+     */
+    getClassList (paramsObj) {
+        return get('/class/query/class/' + paramsObj.currentPage)
+    },
+    /**
+     * 
+     * @param {Object} paramsObj 更新班级信息
+     * method post
+     */
+    upDateClassInfo (paramsObj) {
+        return post('/class/uodate/class', paramsObj)
+    },
+    /**
+     * 
+     * @param {Object} paramsObj 添加班级
+     * method post
+     * 
+     */
+    addClassInfo (paramsObj) {
+        return post('/class/add/class', paramsObj)
+    },
+    /**
+     * 获取职位列表
+     */
+    getPositionList () {
+        return get('/position/list')
+    },
+    /**
+     * 
+     * @param {Object} paramsObj 更新职位信息
+     * method post
+     */
+    upDatePositionList (paramsObj) {
+        return post('/position/update', paramsObj)
+    },
+    /**
+     * 
+     * @param {Object} paramsObj 添加职位信息
+     * method post
+     */
+    addPosInfo (paramsObj) {
+        return post('/position/add', paramsObj)
+    }
+}   
