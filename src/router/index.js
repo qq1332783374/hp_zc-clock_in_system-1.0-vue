@@ -9,6 +9,8 @@ import login from 'components/login/login'
 import teacher from 'components/teacher/teacher'
 // 班级管理
 import stuClass from 'components/class/class'
+// 辅导员班级管理 
+import teaClass from 'components/class/teaClass/teaClass'
 // 学生管理
 import students from 'components/students/students'
 // 职位管理
@@ -16,6 +18,8 @@ import position from 'components/position/position'
 import stuPosition from 'components/position/pages/stuPosition'
 // 赏罚管理
 import rewards from 'components/rewards/rewards'
+//学生赏罚管理
+import stuRewards from 'components/rewards/stuRewards/stuRewards'
 // 税率调整
 import tax from 'components/tax/tax'
 // 等级管理
@@ -65,7 +69,8 @@ export default new Router({
         title: '班级管理'
       },
       children: [
-        {path: 'stuClass', name: '班级管理', component: stuClass, meta: {title: '班级管理'}}
+        {path: 'stuClass', name: '班级管理', component: stuClass, meta: {title: '班级管理'}},
+        {path: 'teaClass', name: '辅导员班级管理', component: teaClass, meta: {title: '辅导班级管理'}}
       ]
     },
     {
@@ -102,12 +107,14 @@ export default new Router({
         title: '赏罚管理'
       },
       children: [
-        {path: 'rewards', name: '赏罚管理', component: rewards, meta: {title: '赏罚管理'}}
+        {path: 'rewards', name: '赏罚管理', component: rewards, meta: {title: '赏罚管理'}},
+        {path: 'stuRewards', name: '学生赏罚管理', component: stuRewards, meta: {title: '学生赏罚管理'}}
       ]
     },
     {
       path: '/',
       name: '税率',
+      hidden: true,
       icon: 'iconfont icon-servicejinkoubaoshui',
       component: home,
       meta: {

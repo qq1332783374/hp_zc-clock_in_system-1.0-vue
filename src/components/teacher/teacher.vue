@@ -170,6 +170,7 @@ export default {
 }
 .importFile .importTitle {
     color: #2b99ff;
+    cursor: pointer;
 }
 
 .importFile .downFile {

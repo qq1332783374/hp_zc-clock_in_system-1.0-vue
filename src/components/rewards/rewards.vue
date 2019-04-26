@@ -1,15 +1,395 @@
 <template>
-    <div class="rewards">
-        rewards
+
+  <div class="rewards">
+    <div class="header">
+      <!-- 下拉列表 -->
+      <el-select v-model="columeType" placeholder="请选择类型" class="isSelect">
+        <el-option v-for="(item,index) in classify" :key="index" :value="item.scName" @click.native='isClassify(index)'>
+        </el-option>
+      </el-select>
+
+      <div class="right">
+
+        <div>
+          <el-button type="primary" size="mini" @click="addRegulations">添加赏罚条例</el-button>
+        </div>
+        <!-- <div><el-input v-model="isSID" placeholder="请输入sID"></el-input></div>
+                <div><el-button slot="append" icon="el-icon-search" @click="inquire"></el-button></div> -->
+        <!-- <el-button type="primary">添加赏罚记录信息</el-button> -->
+      </div>
     </div>
+
+
+    <el-table :data="tableData" style="width: 100%">
+      <el-table-column label="赏罚判定" width="180">
+        <template slot-scope="scope">
+
+          <span style="margin-left: 10px">{{ scope.row.scName }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="赏罚名称" width="300">
+        <template slot-scope="scope">
+
+          <span>{{ scope.row.sName }}</span>
+        </template>
+      </el-table-column>
+      <!-- <el-table-column
+      label="说明"
+      width="180">
+      <template slot-scope="scope">
+        
+        <span style="margin-left: 10px">{{ scope.row.sRemark }}</span>
+      </template>
+    </el-table-column> -->
+      <el-table-column label="赏罚金额" width="180">
+        <template slot-scope="scope">
+
+          <span style="margin-left: 10px">{{ scope.row.sMoney }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="加减分项" width="180">
+        <template slot-scope="scope">
+
+          <span style="margin-left: 10px">{{ scope.row.sValue }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
+          <el-button size="mini" @click="isDetails(scope.$index, scope.row)">详情</el-button>
+
+        </template>
+      </el-table-column>
+    </el-table>
+    <!-- 添加赏罚条例 -->
+    <el-dialog title="添加赏罚条例" :visible.sync="isRegulations" width="30%" :before-close="handRegulations">
+      <div class="content">
+        <el-radio-group v-model="labelPosition" size="small">
+          <el-radio-button label="left">左对齐</el-radio-button>
+          <el-radio-button label="right">右对齐</el-radio-button>
+          <el-radio-button label="top">顶部对齐</el-radio-button>
+        </el-radio-group>
+        <div style="margin: 20px;"></div>
+        <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
+          <el-form-item label="赏罚分类">
+            <el-input v-model="formLabelAlign.scID"></el-input>
+          </el-form-item>
+          <el-form-item label="规定名称">
+            <el-input v-model="formLabelAlign.sName"></el-input>
+          </el-form-item>
+          <el-form-item label="赏罚金额">
+            <el-input v-model="formLabelAlign.sMoney"></el-input>
+          </el-form-item>
+          <el-form-item label="规定说明">
+            <el-input v-model="formLabelAlign.sRemark"></el-input>
+          </el-form-item>
+          <el-form-item label="加减分项">
+            <el-input v-model="formLabelAlign.sValue"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="isRegulations = false">取 消</el-button>
+        <el-button type="primary" @click="isaddRegulations">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 修改 -->
+    <el-dialog title="修改" :visible.sync="ishandleEdit" width="30%" :before-close="handHandleEdit">
+      <div class="content">
+        <el-radio-group v-model="labelPosition" size="small">
+          <el-radio-button label="left">左对齐</el-radio-button>
+          <el-radio-button label="right">右对齐</el-radio-button>
+          <el-radio-button label="top">顶部对齐</el-radio-button>
+        </el-radio-group>
+        <div style="margin: 20px;"></div>
+        <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
+          <el-form-item label="规定编号">
+            {{isstuInfo.sID}}
+          </el-form-item>
+
+          <el-form-item label="赏罚金额">
+            <el-input v-model="formhandleEdit.sMoney" :placeholder="isstuInfo.sMoney"></el-input>
+          </el-form-item>
+          <el-form-item label="规定说明">
+            <el-input v-model="formhandleEdit.sRemark" :placeholder="isstuInfo.sRemark"></el-input>
+          </el-form-item>
+          <el-form-item label="加减分项">
+            <el-input v-model="formhandleEdit.sValue" :placeholder="isstuInfo.sValue"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="ishandleEdit = false">取 消</el-button>
+        <el-button type="primary" @click="isHandleEdit">确 定</el-button>
+      </span>
+    </el-dialog>
+
+     <!-- 详情 -->
+    <el-dialog
+            title="详情"
+            :visible.sync="infoDetails"
+            width="30%"
+            :before-close="detailsInfo">
+            <div class="content">
+                <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
+                    <el-form-item label="赏罚判定:">
+                        {{thisDetails.scName}}
+                    </el-form-item>
+                    <el-form-item label="赏罚名称:">
+                       {{thisDetails.sName}}
+                    </el-form-item>
+                    <el-form-item label="赏罚金额:">
+                        {{thisDetails.sMoney}}
+                    </el-form-item>
+                    <el-form-item label="加减分项:">
+                        {{thisDetails.sValue}}
+                    </el-form-item>
+                    
+                    <div>
+                        <p style="margin-left: 10px;">赏罚说明:</p>
+                        <div style="text-indent:25px">{{thisDetails.sRemark}}</div>
+                    </div>
+                    <!-- <div>
+                        <p>赏罚判定:</p>
+                        <div style="text-indent:25px">12112</div>
+                    </div>
+                    <div>
+                        <p>赏罚名称:</p>
+                        <div style="text-indent:25px">12112</div>
+                    </div>
+                    <div>
+                        <p>赏罚说明:</p>
+                        <div style="text-indent:25px">大家啊发货啦杀了卡萨达龙卷风垃圾飞机头两位嗷嗷哭安无倾开发安静而且还忘记看</div>
+                    </div>
+                    <div>
+                        <p>赏罚金额:</p>
+                        <div style="text-indent:25px">12112</div>
+                    </div>
+                    <div>
+                        <p>加减分项:</p>
+                        <div style="text-indent:25px">12112</div>
+                    </div> -->
+                </el-form>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="infoDetails = false">取 消</el-button>
+                <el-button type="primary" @click="infoDetails = false">确 定</el-button>
+            </span>
+        </el-dialog>
+  </div>
 </template>
 
 <script>
-export default {
-    name: 'rewards'
-}
+  export default {
+    name: 'rewards',
+    data() {
+      return {
+        isSID: '',
+        issMoney: '',
+        tableData: [],
+        classify: [],
+        columeType: '',
+        isRegulations: false,
+        ishandleEdit: false,
+        labelPosition: 'right',
+        isstuInfo: '',
+        infoDetails:false,
+        thisDetails:'',
+        formLabelAlign: {
+          scID: '',
+          sName: '',
+          sMoney: '',
+          sRemark: '',
+          sValue: '',
+        },
+        formhandleEdit: {
+          sID: '',
+          sMoney: '',
+          sRemark: '',
+          sValue: '',
+        },
+
+      }
+    },
+    methods: {
+      getAward() { //获取下拉列表数据
+        const parms = {
+
+        }
+        this.$server.getAward(parms).then((res) => {
+          console.log(res)
+          this.classify = res
+          console.log(this.classify)
+        }).catch((err) => {
+          console.log(err)
+        })
+      },
+      isClassify(index) { //下拉列表选择
+        console.log(this.classify[index].scID)
+        const parms = {
+          pagesNum: this.classify[index].scID
+        }
+        this.$server.isClassify(parms).then((res) => {
+          console.log(res)
+          this.tableData = res
+        }).catch((err) => {
+          console.log(err)
+        })
+      },
+
+      addRegulations() { //添加赏罚条例按钮
+
+        this.isRegulations = true
+      },
+      isaddRegulations() { //确定添加赏罚条例
+        if (this.formLabelAlign.scID == '') {
+          this.$message('请输入赏罚分类');
+        } else if (this.formLabelAlign.sName == '') {
+          this.$message('请输入规定名称');
+        } else if (this.formLabelAlign.sMoney == '') {
+          this.$message('请输入赏罚金额');
+        } else if (this.formLabelAlign.sRemark == '') {
+          this.$message('请输入规定说明');
+        } else if (this.formLabelAlign.sValue == '') {
+          this.$message('请输入加减分项');
+        } else {
+          this.issMoney = this.formLabelAlign.sMoney * 100
+
+          this.isRegulations = false
+          var parms = new URLSearchParams
+          parms.append('scID', this.formLabelAlign.scID)
+          parms.append('sName', this.formLabelAlign.sName)
+          parms.append('sMoney', this.issMoney)
+          parms.append('sRemark', this.formLabelAlign.sRemark)
+          parms.append('sValue', this.formLabelAlign.sValue)
+
+          this.$server.isaddRegulations(parms).then((res) => {
+            console.log(res)
+            this.$message({
+            message: '添加成功',
+            type: 'success'
+            });
+          }).catch((err) => {
+            console.log(err)
+          })
+        }
+
+      },
+      handleEdit(index, item) { //修改
+        console.log(item)
+        this.isstuInfo = item
+        this.ishandleEdit = true
+        this.formhandleEdit.sID = item.sID
+      },
+      isHandleEdit() { //确定修改
+
+        if (this.formhandleEdit.sMoney == '') {
+          this.$message('请输入修改的赏罚金额');
+        } else if (this.formhandleEdit.sRemark == '') {
+          this.$message('请输入修改的规定说明');
+        } else if (this.formhandleEdit.sValue == '') {
+          this.$message('请输入修改的加减分项');
+        } else {
+          this.issMoney = this.formhandleEdit.sMoney * 100
+          this.ishandleEdit = false
+          var parms = new URLSearchParams
+          parms.append('sID', this.formhandleEdit.sID)
+          parms.append('sMoney', this.issMoney)
+          parms.append('sRemark', this.formhandleEdit.sRemark)
+          parms.append('sValue', this.formhandleEdit.sValue)
+
+          this.$server.isHandleEdit(parms).then((res) => {
+            console.log(res)
+            this.$message({
+            message: '修改成功',
+            type: 'success'
+            });
+          }).catch((err) => {
+            console.log(err)
+          })
+        }
+
+
+      },
+      isDetails(index, item) { //详情
+        console.log(item.sID)
+        const parms = {
+          pagesNum: item.sID
+        }
+        this.$server.isDetails(parms).then((res) => {
+          console.log(res)
+            this.infoDetails=true
+            this.thisDetails =res
+        }).catch((err) => {
+          console.log(err)
+        })
+
+      },
+      // inquire(){  //sid查询
+      //     if(this.isSID==''){
+      //         this.$message('请输入sID');
+      //     }else{
+      //         const parms = {
+      //         pagesNum: this.isSID
+      //     }
+      //     this.$server.inquire(parms).then((res) => {
+      //         console.log(res)
+
+      //     }).catch((err) => {
+      //         console.log(err)
+      //     })
+      //     }
+
+      // },
+      handRegulations() {
+        this.isRegulations = false
+      },
+      handHandleEdit() {
+        this.ishandleEdit = false
+      },
+      detailsInfo(){
+           this.infoDetails = false
+      }
+
+    },
+    created() {
+      this.getAward()
+    }
+  }
+
 </script>
 
 <style scoped>
+  .isSelect {
+    margin-bottom: 10px;
+  }
+
+  .right {
+    float: right;
+    height: 100%;
+  }
+
+  .right div {
+    display: inline-block;
+    display: flex;
+    height: 100%;
+    align-items: center;
+  }
+
+  .header {
+    background: #fff;
+    padding: 5px;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+    height: 50px;
+    box-shadow: 0px 2px 4px #ddd;
+  }
+
+  .my-table {
+    box-shadow: 0px 2x 4px #ddd;
+    
+  }
 
 </style>

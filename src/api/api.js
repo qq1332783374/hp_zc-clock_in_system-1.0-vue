@@ -97,6 +97,11 @@ export function post(url, params ={}) {
  */
 export const server = {
     /**
+     * writer: 谭上彪
+     * blog: www.tanshangbiao.cn
+     * / 
+
+    /**
      * 
      * @param {Object} paramsObj 获取辅导信息
      * methods get
@@ -115,6 +120,13 @@ export const server = {
         return get('/teacher/delete/'+ paramsObj.teaUUID)
     },
     /**
+     *  获取全部年级列表
+     *  接口地址 /class/get/grade
+     */
+    getAllGeadeList () {
+        return get('/class/get/grade')
+    },  
+    /**
      * 
      * @param {Object} paramsObj 获取班级列表
      * methods get 
@@ -125,11 +137,37 @@ export const server = {
     },
     /**
      * 
+     * @param {Object} paramsObj 通过teaUUID获取年级
+     * method get 
+     * 接口地址 /class/get/grade
+     */
+    getGradeList (paramsObj) {
+        return get('/class/get/grade?teaUUID=' + paramsObj.teaUUID)
+    },
+    /**
+     * 
+     * @param {Object} paramsObj 通过教师id和年级id 获取学生列表
+     * method get
+     * 接口地址 /class/list/by/tea/
+     */
+    getClassListByTeaUUID (paramsObj) {
+        return get('/class/list/by/tea/'+ paramsObj.teaUUID + '/' + paramsObj.grade)
+    },
+    /**
+     * 
+     * @param {Object} paramsObj 通过年级查找班级
+     * 接口地址 /class/list/by/{grade}/{currentPage}
+     */
+    getClassListByGrade(paramsObj) {  
+        return get('/class/list/by/' + paramsObj.grade+'/'+ paramsObj.currentPage)
+    },
+    /**
+     * 
      * @param {Object} paramsObj 更新班级信息
      * method post
      */
     upDateClassInfo (paramsObj) {
-        return post('/class/uodate/class', paramsObj)
+        return post('/class/update/class', paramsObj)
     },
     /**
      * 
@@ -161,5 +199,109 @@ export const server = {
      */
     addPosInfo (paramsObj) {
         return post('/position/add', paramsObj)
+    },
+    /**
+     * 
+     * @param {Object} paramsObj 根据班级获取学生列表
+     * method get 
+     * 字段
+     * classUUID
+     * pageNum
+     * 接口地址  /student/list/{classUUID}/{pageNum}
+     */
+    getStuClassByClassUUID (paramsObj) {
+        return get('/student/list/'+ paramsObj.classUUID + '/' + paramsObj.pageNum)
+    },
+    /**
+     * 
+     * @param {Object} paramsObj 查看学生职位信息
+     * method get 
+     * 字段 stuUUID
+     * 接口地址 /position/getStuPositionInfo/{stuUUID}
+     */
+    getPosInfoBystuUUID (paramsObj) {
+        return get('/position/getStuPositionInfo/' + paramsObj.stuUUID)
+    },
+    /**
+     * 
+     * @param {Object} paramsObj 学生职位升降
+     * method post 
+     * 接口地址 /position/record/update
+     */
+    upOrDownStuPos (paramsObj) {
+        return post('/position/record/update', paramsObj)
+    },
+    /**
+     * 
+     * @param {Object} paramsObj 给学生添加新职位
+     * method post
+     * 接口地址 /position/record/add
+     */
+    addStuNewPos (paramsObj) {
+        return post('/position/record/add', paramsObj)
+    },
+    // writer: 潘光亮
+    /**
+     * 
+     *  查看赏罚分类信息列表
+     */
+    
+    getAward (paramsObj) {//获取赏罚分类信息列表
+        return get('/stipulation/classify/list')
+    },
+    isClassify (paramsObj) {//查看赏罚分类信息列表
+        return get('/stipulation/list/'+paramsObj.pagesNum)
+    },
+    inquire (paramsObj) {//sID查询赏罚分类信息
+        return get('/stipulation/get/'+paramsObj.pagesNum)
+    },
+    isaddRegulations (paramsObj) {//增加赏罚分类信息列表
+        return post('/stipulation/add',paramsObj)
+    },
+    isHandleEdit (paramsObj){ //修改赏罚分类信息
+        return post('/stipulation/update',paramsObj)
+    },
+    recordAdd (paramsObj){
+        return post('/stipulation/record/add',paramsObj)
+    },
+    inquireInfo(paramsObj){
+        return post('/stipulation/record/list',paramsObj)
+    },
+
+    /**
+     * 
+     *  学生操作
+     */
+    classinfo (paramsObj) {
+        return get('/student/list/'+paramsObj.classUUID+'/1')
+    },
+    grade (paramsObj) {//获取对应年级
+        return get('/class/get/grade/',paramsObj)
+    },
+    Gradeinfo (paramsObj) {//获取对应年级
+        return get('/class/list/by/tea/'+paramsObj.teaUUID+'/'+paramsObj.grade)
+    },
+    isClassUUID (paramsObj) {//获取班级id
+        return get('/class/query/class/'+paramsObj.currentPage)
+    },
+    thisAmend(paramsObj){
+        return post('/student/update',paramsObj)
+    },
+    handleDelete(paramsObj){
+        return get('/student/delete/'+paramsObj.stuUUID)
+    },
+    isDetails(paramsObj){ //详情
+        return get('/stipulation/get/'+paramsObj.pagesNum)
+    },
+
+
+    Level(paramsObj){   //获取等级列表
+        return get('/level/level/list')
+    },
+    ensureLevel(paramsObj){  //修改等级基本工资
+        return post('/level/update/salary',paramsObj)
+    },
+    adjustment(){  //等级调整
+        return get('/level/update')
     }
 }   

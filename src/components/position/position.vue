@@ -26,7 +26,7 @@
                         <el-button
                         size="mini"
                         type="primary"
-                        @click="handleCheck(scope.$index, scope.row)">查看职位信息</el-button>
+                        @click="handleCheck(scope.$index, scope.row)">职位修改</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -40,18 +40,17 @@
             <div class="content">
                 <el-form ref="form" label-width="80px">
                     <el-form-item label="职位名称">
-                        <el-input v-model="upDatePosInfo.postName" placeholder="请输入职位名称" :disabled="isChangePosInfo"></el-input>
+                        <el-input v-model="upDatePosInfo.postName" placeholder="请输入职位名称" ></el-input>
                     </el-form-item>
                     <el-form-item label="岗位补贴">
-                        <el-input v-model="upDatePosInfo.postSubsidy" placeholder="请输入岗位补贴" :disabled="isChangePosInfo"></el-input>
+                        <el-input v-model="upDatePosInfo.postSubsidy" placeholder="请输入岗位补贴"></el-input>
                     </el-form-item>
                     <input type="hidden" name="postID" v-model="upDatePosInfo.postID">
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="handleClose()">取 消</el-button>
-                <el-button type="success" @click="isChangePosInfo = false" v-if="isChangePosInfo">修 改</el-button>
-                 <el-button type="primary" @click="upadtePos()"  v-else>确 定</el-button>
+                <el-button type="primary" @click="upadtePos()" >确 定</el-button>
             </span>
         </el-dialog>
 
