@@ -38,6 +38,23 @@ router.beforeEach((to, from, next) => {
 import {server} from 'api/api'
 Vue.prototype.$server = server
 
+// 倒计时退出
+var times = 3300
+function logOut () {
+  times -- ;
+  if (times == 0) {
+    console.log('token已过期')
+    console.log(router)
+    sessionStorage.removeItem('token')
+    localStorage.removeItem('user')
+    router.push({path: '/login'})
+    alert('登录验证已过期，请重新登录')
+    // 重置
+    times = 3300
+  } 
+}
+setInterval(logOut, 1000)
+
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

@@ -133,6 +133,7 @@ export default {
             console.log(item)
             this.levelShow = true
             this.levelID=item.levelID
+            this.formLabelAlign =item
             this.coefficient = item.coefficient
             console.log(this.levelID)
             
