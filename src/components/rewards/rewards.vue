@@ -56,9 +56,9 @@
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
-          <el-button size="mini" @click="isDetails(scope.$index, scope.row)">详情</el-button>
-
+          
+          <el-button type="success" size="mini" @click="isDetails(scope.$index, scope.row)">详情</el-button>
+          <el-button type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -68,19 +68,27 @@
         <div style="margin: 20px;"></div>
         <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
           <el-form-item label="赏罚分类">
-            <el-input v-model="formLabelAlign.scID"></el-input>
+            <!-- <el-input v-model="formLabelAlign.scID"></el-input> -->
+            <el-select v-model="columeType2" placeholder="请选择赏罚分类" class="isSelect">
+              <el-option v-for="(item,index) in classify2" :key="index" :value="item.scName" @click.native='isClassify2(index)'>
+              </el-option>
+            </el-select>
           </el-form-item>
+          <!-- <el-select v-model="columeType2" placeholder="请选择赏罚分类" class="isSelect">
+              <el-option v-for="(item,index) in classify2" :key="index" :value="item.scName" @click.native='isClassify2(index)'>
+              </el-option>
+            </el-select> -->
           <el-form-item label="规定名称">
-            <el-input v-model="formLabelAlign.sName"></el-input>
+            <el-input v-model="formLabelAlign.sName" placeholder="请输入规定的名称"></el-input>
           </el-form-item>
           <el-form-item label="赏罚金额">
-            <el-input v-model="formLabelAlign.sMoney"></el-input>
+            <el-input v-model="formLabelAlign.sMoney" placeholder="请输入赏罚的金额"></el-input>
           </el-form-item>
           <el-form-item label="规定说明">
-            <el-input v-model="formLabelAlign.sRemark"></el-input>
+            <el-input v-model="formLabelAlign.sRemark" placeholder="请输入规定说明"></el-input>
           </el-form-item>
           <el-form-item label="加减分项">
-            <el-input v-model="formLabelAlign.sValue"></el-input>
+            <el-input v-model="formLabelAlign.sValue" placeholder="请输入加减分项"></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -96,17 +104,17 @@
         <div style="margin: 20px;"></div>
         <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
           <el-form-item label="规定编号">
-            {{isstuInfo.sID}}
+            {{formhandleEdit.sID}}
           </el-form-item>
 
           <el-form-item label="赏罚金额">
-            <el-input v-model="formhandleEdit.sMoney" :placeholder="isstuInfo.sMoney"></el-input>
+            <el-input v-model="formhandleEdit.sMoney" placeholder="请输入赏罚金额"></el-input>
           </el-form-item>
           <el-form-item label="规定说明">
-            <el-input v-model="formhandleEdit.sRemark" :placeholder="isstuInfo.sRemark"></el-input>
+            <el-input v-model="formhandleEdit.sRemark" placeholder="请输入规定说明"></el-input>
           </el-form-item>
           <el-form-item label="加减分项">
-            <el-input v-model="formhandleEdit.sValue" :placeholder="isstuInfo.sValue"></el-input>
+            <el-input v-model="formhandleEdit.sValue" placeholder="请输入加减分项"></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -180,7 +188,10 @@
         issMoney: '',
         tableData: [],
         classify: [],
+        classify2:[],
         columeType: '',
+        columeType2: '',
+        classifyscID:'',
         isRegulations: false,
         ishandleEdit: false,
         labelPosition: 'right',
@@ -211,6 +222,7 @@
         this.$server.getAward(parms).then((res) => {
           console.log(res)
           this.classify = res
+          this.classify2 = res
           console.log(this.classify)
         }).catch((err) => {
           console.log(err)
@@ -228,14 +240,17 @@
           console.log(err)
         })
       },
-
+      isClassify2(index){
+        console.log(this.classify2[index].scID)
+        this.classifyscID = this.classify2[index].scID
+      },
       addRegulations() { //添加赏罚条例按钮
 
         this.isRegulations = true
       },
       isaddRegulations() { //确定添加赏罚条例
-        if (this.formLabelAlign.scID == '') {
-          this.$message('请输入赏罚分类');
+        if (this.classify2 == '') {
+          this.$message('请选择赏罚分类');
         } else if (this.formLabelAlign.sName == '') {
           this.$message('请输入规定名称');
         } else if (this.formLabelAlign.sMoney == '') {
@@ -249,7 +264,7 @@
 
           this.isRegulations = false
           var parms = new URLSearchParams
-          parms.append('scID', this.formLabelAlign.scID)
+          parms.append('scID', this.classifyscID)
           parms.append('sName', this.formLabelAlign.sName)
           parms.append('sMoney', this.issMoney)
           parms.append('sRemark', this.formLabelAlign.sRemark)
@@ -269,7 +284,7 @@
       },
       handleEdit(index, item) { //修改
         console.log(item)
-        this.isstuInfo = item
+        this.formhandleEdit = item
         this.ishandleEdit = true
         this.formhandleEdit.sID = item.sID
       },

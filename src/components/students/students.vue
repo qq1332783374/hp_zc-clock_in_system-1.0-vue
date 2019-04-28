@@ -48,10 +48,11 @@
             </el-select>
           </el-form-item>
           <el-form-item label="名称">
-            <el-input v-model="formLabelAlign.stuName" :placeholder="isstuInfo.stuName"></el-input>
+            <!-- :placeholder="isstuInfo.stuName" -->
+            <el-input v-model="formLabelAlign.stuName"  placeholder="请输入名字"></el-input>
           </el-form-item>
           <el-form-item label="邮箱">
-            <el-input v-model="formLabelAlign.email" :placeholder="isstuInfo.email"></el-input>
+            <el-input v-model="formLabelAlign.email" placeholder="请输入邮箱"></el-input>
           </el-form-item>
           <!-- <el-form-item label="学生编号">
                     <el-input v-model="formLabelAlign.stuUUID" :placeholder="isstuInfo.stuUUID"></el-input>
@@ -228,8 +229,8 @@
 
         this.isAmend = true
 
-        this.isstuInfo = item
-        console.log(this.isstuInfo)
+        this.formLabelAlign = item
+        console.log(this.formLabelAlign)
       },
       thisAmend() { //确定修改学生信息
 
@@ -252,7 +253,7 @@
           parms.append('stuName', this.formLabelAlign.stuName)
           parms.append('classUUID', this.classID)
           parms.append('email', this.formLabelAlign.email)
-          parms.append('stuUUID', this.isstuInfo.stuUUID)
+          parms.append('stuUUID', this.formLabelAlign.stuUUID)
 
 
           this.$server.thisAmend(parms).then((res) => {
