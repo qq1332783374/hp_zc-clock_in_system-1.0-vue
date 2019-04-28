@@ -13,6 +13,8 @@ import stuClass from 'components/class/class'
 import teaClass from 'components/class/teaClass/teaClass'
 // 学生管理
 import students from 'components/students/students'
+// 绩效分管理
+import stuCcore from 'components/students/stuCcore/stuCcore'
 // 职位管理
 import position from 'components/position/position'
 import stuPosition from 'components/position/pages/stuPosition'
@@ -82,7 +84,8 @@ export default new Router({
         title: '学生管理'
       },
       children: [
-        {path: 'students', name: '学生管理', component: students, meta: {title: '学生管理'}}
+        {path: 'students', name: '学生管理', component: students, meta: {title: '学生管理'}},
+        {path: 'stuCcore', name: '绩效分管理', component: stuCcore, meta: {title: '绩效分管理'}}
       ]
     },
     {

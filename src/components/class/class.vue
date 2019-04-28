@@ -331,6 +331,7 @@ export default {
                 }
             }).catch((err) => {
                 console.log(res)
+                this.isLoading = false
             })
         },
 
@@ -355,6 +356,7 @@ export default {
                 }
             }).catch((err) => {
                 console.log(err)
+                this.isLoading = false
             })
         },
 

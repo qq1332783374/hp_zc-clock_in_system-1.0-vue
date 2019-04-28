@@ -54,6 +54,7 @@
       <template slot-scope="scope">
         <el-button
           size="mini"
+          type="success"
           @click="alterLevel(scope.$index, scope.row)">修改</el-button>
         
       </template>
@@ -67,11 +68,7 @@
     width="30%"
     :before-close="handlelevel">
     <div>
-        <el-radio-group v-model="labelPosition" size="small">
-  <el-radio-button label="left">左对齐</el-radio-button>
-  <el-radio-button label="right">右对齐</el-radio-button>
-  <el-radio-button label="top">顶部对齐</el-radio-button>
-</el-radio-group>
+
 <div style="margin: 20px;"></div>
 <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
   <el-form-item label="等级编号">

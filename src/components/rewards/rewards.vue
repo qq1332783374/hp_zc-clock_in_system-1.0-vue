@@ -65,11 +65,6 @@
     <!-- 添加赏罚条例 -->
     <el-dialog title="添加赏罚条例" :visible.sync="isRegulations" width="30%" :before-close="handRegulations">
       <div class="content">
-        <el-radio-group v-model="labelPosition" size="small">
-          <el-radio-button label="left">左对齐</el-radio-button>
-          <el-radio-button label="right">右对齐</el-radio-button>
-          <el-radio-button label="top">顶部对齐</el-radio-button>
-        </el-radio-group>
         <div style="margin: 20px;"></div>
         <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
           <el-form-item label="赏罚分类">
@@ -98,11 +93,6 @@
     <!-- 修改 -->
     <el-dialog title="修改" :visible.sync="ishandleEdit" width="30%" :before-close="handHandleEdit">
       <div class="content">
-        <el-radio-group v-model="labelPosition" size="small">
-          <el-radio-button label="left">左对齐</el-radio-button>
-          <el-radio-button label="right">右对齐</el-radio-button>
-          <el-radio-button label="top">顶部对齐</el-radio-button>
-        </el-radio-group>
         <div style="margin: 20px;"></div>
         <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
           <el-form-item label="规定编号">

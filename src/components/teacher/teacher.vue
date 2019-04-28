@@ -123,13 +123,15 @@ export default {
                 }).catch((err) => {
                     console.log(err)
                     this.$message.error('删除失败')
+                    this.$loading().close()
                 })
                 
             }).catch(() => {
                 this.$message({
                     type: 'info',
                     message: '已取消删除'
-                });         
+                });   
+                this.$loading().close()      
             });
         },
         handleClose () {
@@ -147,6 +149,7 @@ export default {
                 }
             }).catch((err) => {
                 console.log(err)
+                this.isLoading = false
             })
         }
     },

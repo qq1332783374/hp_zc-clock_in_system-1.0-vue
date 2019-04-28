@@ -1,12 +1,11 @@
 <template>
   <div class="students">
-      <el-select placeholder="请选择您带的年级" class="isSelect" v-model="classGrade" style="margin-bottom: 10px;">
-      <el-option v-for="(item,index) in Grade" :key="index" :value="item.grade"
-        @click.native='Gradeinfo(index)'>
+    <el-select placeholder="请选择年级" class="isSelect" v-model="classGrade" style="margin-bottom: 10px;">
+      <el-option v-for="(item,index) in Grade" :key="index" :value="item.grade" @click.native='Gradeinfo(index)'>
       </el-option>
     </el-select>
     <!-- *********** -->
-    <el-select placeholder="请选择类型" class="isSelect" v-model="isclassName" style="margin-bottom: 10px;">
+    <el-select placeholder="请选择班级" class="isSelect" v-model="isclassName" style="margin-bottom: 10px;">
       <el-option v-for="(item,index) in classUUID1" :key="index" :value="item.className"
         @click.native='classinfo(index)'>
       </el-option>
@@ -20,11 +19,6 @@
       </el-table-column>
       <el-table-column prop="levelName" label="level">
       </el-table-column>
-      <!-- <el-table-column
-            prop="stuUUID"
-            label="学生编号"
-            >
-        </el-table-column> -->
       <el-table-column prop="stuNo" label="学号">
       </el-table-column>
       <el-table-column label="操作">
@@ -43,11 +37,7 @@
     <!-- 修改学生信息 -->
     <el-dialog title="修改学生信息" :visible.sync="isAmend" width="30%" :before-close="handleAmend">
       <div class="content">
-        <el-radio-group v-model="labelPosition" size="small">
-          <el-radio-button label="left">左对齐</el-radio-button>
-          <el-radio-button label="right">右对齐</el-radio-button>
-          <el-radio-button label="top">顶部对齐</el-radio-button>
-        </el-radio-group>
+
         <div style="margin: 20px;"></div>
         <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
           <el-form-item label="班级编号">
@@ -124,8 +114,8 @@
     name: 'students',
     data() {
       return {
-        Grade:'',
-        classGrade:'',//年级
+        Grade: '',
+        classGrade: '', //年级
         isclassName: '',
         isEditShow: false,
         isAmend: false,
@@ -145,13 +135,13 @@
         classUUID: [
 
         ],
-        classUUID1:[],
+        classUUID1: [],
         classID: ''
       }
     },
     methods: {
       studentlist() {
-          console.log('teaUUID')//7c84fc519f174f578332998cb1e1a7c8
+        console.log('teaUUID') //7c84fc519f174f578332998cb1e1a7c8
         //  const parms = {
 
         // }
@@ -163,30 +153,30 @@
         //     console.log(err)
         // })
       },
-      grade(){     //获取年级
+      grade() { //获取年级
         //    const parms = {
         //        teaUUID:'7c84fc519f174f578332998cb1e1a7c8'
         // }
         var parms = new URLSearchParams
-          parms.append('teaUUID', '7c84fc519f174f578332998cb1e1a7c8')
+        parms.append('teaUUID', '7c84fc519f174f578332998cb1e1a7c8')
         this.$server.grade(parms).then((res) => {
-            console.log('获取年级')
-            console.log(res)
-            this.Grade=res
+          console.log('获取年级')
+          console.log(res)
+          this.Grade = res
         }).catch((err) => {
-            console.log(err)
+          console.log(err)
         })
       },
-      Gradeinfo(index){ //获取班级
+      Gradeinfo(index) { //获取班级
         console.log(this.classGrade)
         const parms = {
-          teaUUID:'7c84fc519f174f578332998cb1e1a7c8',
-          grade:this.classGrade
+          teaUUID: '7c84fc519f174f578332998cb1e1a7c8',
+          grade: this.classGrade
         }
         this.$server.Gradeinfo(parms).then((res) => {
           console.log('获取对应班级')
           console.log(res)
-         this.classUUID1=res
+          this.classUUID1 = res
         }).catch((err) => {
           console.log(err)
         })
@@ -268,8 +258,8 @@
           this.$server.thisAmend(parms).then((res) => {
             console.log(res)
             this.$message({
-            message: '修改成功',
-            type: 'success'
+              message: '修改成功',
+              type: 'success'
             });
           }).catch((err) => {
             console.log(err)

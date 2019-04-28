@@ -22,6 +22,17 @@ router.beforeEach((to, from, next) => {
 })
 
 // 路由拦截
+router.beforeEach((to, from, next) => {
+  if (to.path == '/login') {
+    sessionStorage.removeItem('token');
+  }
+  let token = sessionStorage.getItem('token');
+  if (!token && to.path != '/login') {
+    next({ path: '/login' });
+  } else {
+    next();
+  }
+})
 
 // api
 import {server} from 'api/api'

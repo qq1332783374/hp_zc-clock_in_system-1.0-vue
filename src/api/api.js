@@ -5,7 +5,10 @@ import { POINT_CONVERSION_HYBRID } from 'constants';
 // http requser 拦截器
 axios.interceptors.request.use((config) => {
     // token 配置
-
+    
+    config.headers = {
+        'token': sessionStorage.getItem('token')
+    }
     return config
 }, (err) => {
     alert('请求超时')
@@ -22,7 +25,7 @@ axios.interceptors.response.use((data) => {
                 Message.error('错误请求')
             break;
             case 401:
-                Message.error('未授权，请重新登录')
+                Message.error('操作权限不足')
                 break;
             case 403:
                 Message.error('拒绝访问')
@@ -99,8 +102,25 @@ export const server = {
     /**
      * writer: 谭上彪
      * blog: www.tanshangbiao.cn
-     * / 
-
+     */
+    
+     /**
+      * token 登录
+      * 接口地址： /login
+      * 字段： telephone & password
+      */
+    // login (paramsObj) {
+    //     return post('/login', paramsObj)
+    // },
+    /**
+     * 
+     * @param {Object} paramsObj 修改密码
+     * 接口地址 /update/password
+     * 字段 telephone newPassword oldPassword
+     */
+    updatePassword (paramsObj) {
+        return post('/update/password', paramsObj)
+    },
     /**
      * 
      * @param {Object} paramsObj 获取辅导信息
@@ -239,6 +259,41 @@ export const server = {
      */
     addStuNewPos (paramsObj) {
         return post('/position/record/add', paramsObj)
+    },
+    /**
+     * 
+     * @param {Object} paramsObj 获取绩效分
+     * 接口地址 /performance/get/stu/performance/by/{classUUID}/{date}/{pageNum}
+     */
+    getPerformanceByClassUUID (paramsObj) {
+        return get('/performance/get/stu/performance/by/'+ paramsObj.classUUID+'/'+ paramsObj.date + '/' + paramsObj.pageNum)
+    },
+    /**
+     * 
+     * @param {Object} paramsObj 给学生添加绩效分
+     * method post
+     * 
+     */
+    addPerformanceScore (paramsObj) {
+        return post('/performance/add', paramsObj)
+    },
+    /**
+     * 
+     * @param {Object} paramsObj 调整绩效分
+     * method post
+     * 接口地址 /performance/update/score
+     */
+    updatePerformanceScore (paramsObj) {
+        return post('/performance/update/score', paramsObj)
+    },
+    /**
+     * 
+     * @param {Object} paramsObj 统计上个月的情况
+     * method get
+     * 接口地址 /statistics/checkIn/
+     */
+    lastMonStatistics (paramsObj) {
+        return get('/statistics/checkIn/'+paramsObj.classUUID)
     },
     // writer: 潘光亮
     /**
