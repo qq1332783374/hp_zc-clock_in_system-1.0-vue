@@ -1,6 +1,9 @@
 <template>
     <div class="stuPosition">
         <div class="header">
+            <el-select v-model="gradeName" style="margin-right: 15px;" placeholder="请选择年级" @change="getClassList">
+                <el-option v-for="(item, index) in gradeList" :key="index" :label="item.grade+'级'" :value="item.grade"></el-option>
+            </el-select>
             <el-select v-model="stuListInfo.classUUID" placeholder="请选择班级" @change="classCheck()">
                 <el-option v-for="(item, index) in classList" :key="index" :label="item.className" :value="item.classUUID"></el-option>
             </el-select>
@@ -193,10 +196,34 @@ export default {
                 postID: '',
                 prName: '',
                 remark: ''
-            }
+            },
+            gradeList:[],  // 年级列表
+            gradeName: '', // 年级名称
+
         }
     },
     methods: {
+        getClassList () {  // 通过年级获取班级
+            console.log(this.gradeName)
+            let params = {
+                grade: this.gradeName,
+                currentPage: 1
+            }
+            this.$server.getClassListByGrade(params).then((res) => {
+                console.log(res.list)
+                this.classList = res.list
+            }).catch((err) => {
+                console.log(err)
+            })
+        },
+        getGeadeList () {  // 获取年级列表
+            this.$server.getAllGeadeList().then((res) => {
+                console.log(res)
+                this.gradeList = res
+            }).catch((err) => {
+                console.log(err)
+            })
+        },
         upAddNewPos () {  // 添加职位
             console.log(this.addNewPos)
             if (this.addNewPos.prName == '') {
@@ -348,18 +375,6 @@ export default {
                 console.log(err)
             })
         },
-        getClassList () {  // 获取班级列表
-            const params = {
-                currentPage: 1
-            }
-            this.$server.getClassList(params).then((res) => {
-                console.log(res)
-                this.classList = res.list
-
-            }).catch((err) => {
-                console.log(err)
-            })
-        },
         tips (val, type) {  // 提示
             this.$message({
                 message: val || '成功',
@@ -368,8 +383,10 @@ export default {
         }
     },
     created () {
+        // 获取年级列表
+        this.getGeadeList()
         // 班级列表
-        this.getClassList()
+        //this.getClassList()
         // 全部职位列表
         this.getPosList()
     }
