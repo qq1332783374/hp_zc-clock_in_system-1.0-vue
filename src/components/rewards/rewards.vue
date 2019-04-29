@@ -276,9 +276,11 @@
           this.$server.isaddRegulations(parms).then((res) => {
             console.log(res)
             this.$message({
-            message: '添加成功',
-            type: 'success'
+              message: '添加成功',
+              type: 'success'
             });
+            this.getAward()
+            
           }).catch((err) => {
             console.log(err)
           })
@@ -316,6 +318,8 @@
             message: '修改成功',
             type: 'success'
             });
+            this.getAward()
+
           }).catch((err) => {
             console.log(err)
           })

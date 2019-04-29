@@ -82,7 +82,7 @@
         </el-dialog>
         <!-- 调整绩效分 -->
         <el-dialog
-            title="添加绩效分"
+            title="调整绩效分"
             :visible.sync="isUpdatePrShow"
             width="30%"
             :before-close="handleClose">
