@@ -40,8 +40,8 @@
 
         <div style="margin: 20px;"></div>
         <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
-          <el-form-item label="班级编号">
-            <el-select placeholder="请选择类型" class="isSelect" v-model="isclassName">
+          <el-form-item label="班级名称">
+            <el-select placeholder="请选择类型" class="isSelect" v-model="isclassName" disabled>
               <el-option v-for="(item,index) in classUUID" :key="index" :value="item.className"
                 @click.native='isclassUUID(index)'>
               </el-option>
@@ -107,6 +107,17 @@
                 <el-button type="primary" @click="isAward = false">确 定</el-button>
             </span>
         </el-dialog> -->
+         <div class="block" v-if="stuInfoShow">
+    
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+     
+      :page-size="100"
+      layout="prev, pager, next, jumper"
+      :total='this.navigatepageNumsList.length*100'>
+    </el-pagination>
+  </div>
   </div>
 </template>
 
@@ -126,6 +137,8 @@
         stuInfo: [
 
         ],
+        stuInfoShow:false,
+        teaUUID:'',//辅导员id
         isstuInfo: '',
         labelPosition: 'right',
         formLabelAlign: {
@@ -137,12 +150,51 @@
 
         ],
         classUUID1: [],
-        classID: ''
+        classID: '',
+        teaInfo: {},  // 教师信息
+        isClassid:'',
+        navigatepageNums:1,//分页
+        navigatepageNumsList:'',//分页列表
+        isIndex:''
+        // currentPage3: 5,
+       
       }
+
     },
     methods: {
+      handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+        console.log(val)
+        console.log('零')
+        this.navigatepageNums = val
+        this.isClassid=this.classUUID1[this.isIndex].classUUID
+        // console.log(this.classUUID1[index].classUUID)
+        const parms = {
+          classUUID: this.classUUID1[this.isIndex].classUUID,
+          pageNum: this.navigatepageNums
+        }
+        this.$server.handleCurrentChange(parms).then((res) => {
+          console.log('获取学生信息')
+          console.log(res)
+          this.stuInfo = res.list
+          this.classID = this.classUUID1[this.isIndex].classUUID
+          this.navigatepageNumsList=res.navigatepageNums
+        }).catch((err) => {
+          console.log(err)
+        })
+        console.log(this.isIndex)
+        console.log(this.classUUID1[this.isIndex].classUUID)
+      },//分页
+
       studentlist() {
+
         console.log('teaUUID') //7c84fc519f174f578332998cb1e1a7c8
+        // localStorage.getItem('user');
+        // this.teaUUID=JSON.parse(localStorage.getItem('user'));
+        // console.log(this.teaUUID)
         //  const parms = {
 
         // }
@@ -159,7 +211,7 @@
         //        teaUUID:'7c84fc519f174f578332998cb1e1a7c8'
         // }
         var parms = new URLSearchParams
-        parms.append('teaUUID', '7c84fc519f174f578332998cb1e1a7c8')
+        parms.append('teaUUID', this.teaInfo.teaUUID)
         this.$server.grade(parms).then((res) => {
           console.log('获取年级')
           console.log(res)
@@ -171,7 +223,7 @@
       Gradeinfo(index) { //获取班级
         console.log(this.classGrade)
         const parms = {
-          teaUUID: '7c84fc519f174f578332998cb1e1a7c8',
+          teaUUID: this.teaInfo.teaUUID,
           grade: this.classGrade
         }
         this.$server.Gradeinfo(parms).then((res) => {
@@ -184,15 +236,26 @@
 
       },
       classinfo(index) {
+        
+        console.log('这里')
+        this.isIndex=index
+        this.isClassid=this.classUUID1[index].classUUID
+        // console.log(this.classUUID1[index].classUUID)
         const parms = {
           classUUID: this.classUUID1[index].classUUID,
-          pageNum: 1
+          pageNum: this.navigatepageNums
         }
         this.$server.classinfo(parms).then((res) => {
           console.log('获取学生信息')
           console.log(res)
           this.stuInfo = res.list
           this.classID = this.classUUID1[index].classUUID
+          this.navigatepageNumsList=res.navigatepageNums
+          if(this.stuInfo==0){
+            this.stuInfoShow=false
+          }else{
+            this.stuInfoShow=true
+          }
         }).catch((err) => {
           console.log(err)
         })
@@ -238,9 +301,10 @@
         console.log(this.formLabelAlign.email)
         console.log(this.formLabelAlign.stuUUID)
         console.log(this.formLabelAlign.stuName)
-        if (this.isclassName == '') {
-          this.$message('请选择班级');
-        } else if (this.formLabelAlign.stuName == '') {
+        // if (this.isclassName == '') {
+        //   this.$message('请选择班级');
+        // } else 
+        if (this.formLabelAlign.stuName == '') {
           this.$message('请输入姓名');
         } else if (this.formLabelAlign.email == '') {
           this.$message('请输入email');
@@ -251,7 +315,7 @@
 
           var parms = new URLSearchParams
           parms.append('stuName', this.formLabelAlign.stuName)
-          parms.append('classUUID', this.classID)
+          parms.append('classUUID', this.isClassid)
           parms.append('email', this.formLabelAlign.email)
           parms.append('stuUUID', this.formLabelAlign.stuUUID)
 
@@ -281,11 +345,11 @@
         this.isAward = true
 
       },
-      isclassUUID(index) {
-        console.log(index)
-        console.log(this.classUUID[index].classUUID)
-        this.classID = this.classUUID[index].classUUID
-      },
+      // isclassUUID(index) {
+      //   console.log(index)
+      //   console.log(this.classUUID[index].classUUID)
+      //   this.classID = this.classUUID[index].classUUID
+      // },
 
 
       handleClose() {
@@ -309,7 +373,10 @@
       this.grade()
       this.studentlist()
       this.isClassUUID()
-
+      // 获取教师信息
+      this.teaInfo = JSON.parse(localStorage.getItem('user')).teacher
+      console.log('老师id')
+      console.log(this.teaInfo.teaUUID)
     }
 
   }

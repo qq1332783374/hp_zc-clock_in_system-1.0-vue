@@ -328,7 +328,10 @@ export const server = {
      *  学生操作
      */
     classinfo (paramsObj) {
-        return get('/student/list/'+paramsObj.classUUID+'/1')
+        return get('/student/list/'+paramsObj.classUUID+'/'+paramsObj.pageNum)
+    },
+    handleCurrentChange(paramsObj){
+        return get('/student/list/'+paramsObj.classUUID+'/'+paramsObj.pageNum)
     },
     grade (paramsObj) {//获取对应年级
         return get('/class/get/grade/',paramsObj)

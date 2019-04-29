@@ -1,6 +1,16 @@
 <template>
     <div>
-        <el-select placeholder="请选择类型" class="isSelect" v-model="isclassName" style="margin-bottom: 10px;">
+        <!-- <el-select placeholder="请选择类型" class="isSelect" v-model="isclassName" style="margin-bottom: 10px;">
+      <el-option v-for="(item,index) in classUUID" :key="index" :value="item.className"
+        @click.native='classinfo(index)'>
+      </el-option>
+    </el-select> -->
+    <el-select placeholder="请选择年级" class="isSelect" v-model="classGrade" style="margin-bottom: 10px;">
+      <el-option v-for="(item,index) in Grade" :key="index" :value="item.grade" @click.native='Gradeinfo(index)'>
+      </el-option>
+    </el-select>
+    <!-- *********** -->
+    <el-select placeholder="请选择班级" class="isSelect" v-model="isclassName" style="margin-bottom: 10px;">
       <el-option v-for="(item,index) in classUUID" :key="index" :value="item.className"
         @click.native='classinfo(index)'>
       </el-option>
@@ -51,10 +61,10 @@
           <el-form-item label="学生名字">
             {{infoStu.stuName}}
           </el-form-item>
-          <el-form-item label="赏罚名称">
+          <el-form-item label="记录标题">
             <el-input v-model="formLabelAlign.srName"></el-input>
           </el-form-item>
-          <el-form-item label="赏罚说明">
+          <el-form-item label="备注">
             <el-input v-model="formLabelAlign.remark"></el-input>
           </el-form-item>
         </el-form>
@@ -120,6 +130,17 @@
             <el-button type="primary" @click="inquireInfo">确 定</el-button>
         </span>
     </el-dialog>
+    <div class="block" v-if="stuInfoShow">
+    
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+     
+      :page-size="100"
+      layout="prev, pager, next, jumper"
+      :total='this.navigatepageNumsList.length*100'>
+    </el-pagination>
+  </div>
     </div>
 </template>
 <script>
@@ -166,6 +187,7 @@ export default {
             classifyinfo:[],
             isclassName: '',//选择班级
             stuInfo: [],    //学生列表
+             stuInfoShow:false,
             isstuInfo: '',
             classUUID: [],  //班级选项
             classID: '',    //班级id
@@ -179,19 +201,86 @@ export default {
             judge:'',
             show:false,
             particulars:[],
+            classGrade: '', //年级
+            teaInfo:'',
+            Grade: '',
+             navigatepageNums:1,//分页
+        navigatepageNumsList:'',//分页列表
+        isIndex:''
         }
     },
     methods:{
+       handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+        console.log(val)
+        this.navigatepageNums = val
+        this.isClassid=this.classUUID[this.isIndex].classUUID
+        // console.log(this.classUUID1[index].classUUID)
+        const parms = {
+          classUUID: this.classUUID[this.isIndex].classUUID,
+          pageNum: this.navigatepageNums
+        }
+        this.$server.handleCurrentChange(parms).then((res) => {
+          console.log('获取学生信息')
+          console.log(res)
+          this.stuInfo = res.list
+          this.classID = this.classUUID1[this.isIndex].classUUID
+          this.navigatepageNumsList=res.navigatepageNums
+        }).catch((err) => {
+          console.log(err)
+        })
+        // console.log(this.isIndex)
+        // console.log(this.classUUID1[this.isIndex].classUUID)
+      },//分页
+      grade() { //获取年级
+        //    const parms = {
+        //        teaUUID:'7c84fc519f174f578332998cb1e1a7c8'
+        // }
+        var parms = new URLSearchParams
+        parms.append('teaUUID', this.teaInfo.teaUUID)
+        this.$server.grade(parms).then((res) => {
+          console.log('获取年级')
+          console.log(res)
+          this.Grade = res
+        }).catch((err) => {
+          console.log(err)
+        })
+      },
+      Gradeinfo(index) { //获取班级
+        console.log(this.classGrade)
+        const parms = {
+          teaUUID: this.teaInfo.teaUUID,
+          grade: this.classGrade
+        }
+        this.$server.Gradeinfo(parms).then((res) => {
+          console.log('获取对应班级')
+          console.log(res)
+          this.classUUID = res
+        }).catch((err) => {
+          console.log(err)
+        })
+
+      },
         classinfo(index) {
+          this.isIndex=index
         const parms = {
           classUUID: this.classUUID[index].classUUID,
-          pageNum: 1
+          pageNum: this.navigatepageNums
         }
         this.$server.classinfo(parms).then((res) => {
           console.log('获取学生信息')
           console.log(res)
           this.stuInfo = res.list
           this.classID = this.classUUID[index].classUUID
+           this.navigatepageNumsList=res.navigatepageNums
+            if(this.stuInfo==0){
+            this.stuInfoShow=false
+          }else{
+            this.stuInfoShow=true
+          }
         }).catch((err) => {
           console.log(err)
         })
@@ -342,7 +431,10 @@ export default {
     
     created() {
         this.getAward(),
-        this.isClassUUID()
+        this.isClassUUID(),
+        this.grade(),
+        this.teaInfo = JSON.parse(localStorage.getItem('user')).teacher
+      console.log(this.teaInfo.teaUUID)
     }
 }
 </script>

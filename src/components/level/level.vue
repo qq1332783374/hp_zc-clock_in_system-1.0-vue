@@ -1,7 +1,7 @@
 <template>
     <div class="level">
-         <el-tooltip class="item right" effect="dark" content="三个月调整一次" placement="bottom" @click="adjustment">
-      <el-button>等级调整</el-button>
+         <el-tooltip class="item right" effect="dark" content="三个月调整一次" placement="bottom">
+      <el-button @click="adjustment">等级调整</el-button>
     </el-tooltip>
       <el-table
     :data="levelInfo"
@@ -118,9 +118,10 @@ export default {
           
         }
         this.$server.Level(parms).then((res) => {
-          console.log('获取对应班级')
+          console.log('获取对应等级')
           console.log(res)
          this.levelInfo=res
+        //  this.formLabelAlign=res
          for(var i=0;i<res.length;i++){
              this.levelInfo[i].salary=this.levelInfo[i].salary/100
          }
@@ -133,6 +134,7 @@ export default {
             console.log(item)
             this.levelShow = true
             this.levelID=item.levelID
+            this.formLabelAlign =item
             this.coefficient = item.coefficient
             console.log(this.levelID)
             
@@ -152,7 +154,7 @@ export default {
          
           parms.append('levelID', this.levelID)
           parms.append('salary', this.formLabelAlign.salary*100)
-          parms.append('coefficient',this.formLabelAlign.coefficient)
+          parms.append('coefficient',this.formLabelAlign.coefficient*100)
 
 
           this.$server.ensureLevel(parms).then((res) => {

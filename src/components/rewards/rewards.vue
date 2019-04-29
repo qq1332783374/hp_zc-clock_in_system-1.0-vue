@@ -106,7 +106,9 @@
           <el-form-item label="规定编号">
             {{formhandleEdit.sID}}
           </el-form-item>
-
+          <el-form-item label="赏罚名称">
+            <el-input v-model="formhandleEdit.sName" placeholder="请输入赏罚名称"></el-input>
+          </el-form-item>
           <el-form-item label="赏罚金额">
             <el-input v-model="formhandleEdit.sMoney" placeholder="请输入赏罚金额"></el-input>
           </el-form-item>
@@ -210,6 +212,7 @@
           sMoney: '',
           sRemark: '',
           sValue: '',
+          sName:''
         },
 
       }
@@ -289,8 +292,9 @@
         this.formhandleEdit.sID = item.sID
       },
       isHandleEdit() { //确定修改
-
-        if (this.formhandleEdit.sMoney == '') {
+        if (this.formhandleEdit.sName == '') {
+          this.$message('请输入修改的赏罚名称');
+        } else if (this.formhandleEdit.sMoney == '') {
           this.$message('请输入修改的赏罚金额');
         } else if (this.formhandleEdit.sRemark == '') {
           this.$message('请输入修改的规定说明');
@@ -304,6 +308,7 @@
           parms.append('sMoney', this.issMoney)
           parms.append('sRemark', this.formhandleEdit.sRemark)
           parms.append('sValue', this.formhandleEdit.sValue)
+          parms.append('sValue', this.formhandleEdit.sName)
 
           this.$server.isHandleEdit(parms).then((res) => {
             console.log(res)
