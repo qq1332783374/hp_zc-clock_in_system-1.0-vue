@@ -155,7 +155,7 @@
         isClassid:'',
         navigatepageNums:1,//分页
         navigatepageNumsList:'',//分页列表
-        isIndex:''
+        isIndex:'',
         // currentPage3: 5,
        
       }
@@ -210,9 +210,8 @@
         //    const parms = {
         //        teaUUID:'7c84fc519f174f578332998cb1e1a7c8'
         // }
-        var parms = new URLSearchParams
-        parms.append('teaUUID', this.teaInfo.teaUUID)
-        this.$server.grade(parms).then((res) => {
+        
+        this.$server.getGradeListByteaUUID(this.teaInfo).then((res) => {
           console.log('获取年级')
           console.log(res)
           this.Grade = res
@@ -370,13 +369,15 @@
 
     },
     created() {
-      this.grade()
-      this.studentlist()
-      this.isClassUUID()
       // 获取教师信息
       this.teaInfo = JSON.parse(localStorage.getItem('user')).teacher
       console.log('老师id')
       console.log(this.teaInfo.teaUUID)
+
+      this.grade()
+      this.studentlist()
+      this.isClassUUID()
+      
     }
 
   }

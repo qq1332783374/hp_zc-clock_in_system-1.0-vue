@@ -239,9 +239,9 @@ export default {
         //    const parms = {
         //        teaUUID:'7c84fc519f174f578332998cb1e1a7c8'
         // }
-        var parms = new URLSearchParams
-        parms.append('teaUUID', this.teaInfo.teaUUID)
-        this.$server.grade(parms).then((res) => {
+        console.log('******')
+        console.log(this.teaInfo)
+        this.$server.getGradeListByteaUUID(this.teaInfo).then((res) => {
           console.log('获取年级')
           console.log(res)
           this.Grade = res
@@ -430,11 +430,12 @@ export default {
     },
     
     created() {
-        this.getAward(),
-        this.isClassUUID(),
-        this.grade(),
         this.teaInfo = JSON.parse(localStorage.getItem('user')).teacher
-      console.log(this.teaInfo.teaUUID)
+        console.log(this.teaInfo)
+        this.getAward();
+        this.isClassUUID();
+        this.grade();
+        
     }
 }
 </script>

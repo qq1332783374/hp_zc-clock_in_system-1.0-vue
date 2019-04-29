@@ -74,12 +74,10 @@
             <!-- 分页 -->
             <el-col :span="24">
                 <el-pagination
-                    background
-                    layout="prev, pager, next"
-                    :total="prPage.total"
-                    :page-size="prPage.pageSize"
                     @current-change="handleCurrentChange"
-                >
+                    :page-size="10"
+                    layout="prev, pager, next, jumper"
+                    :total='prPage.total'>
                 </el-pagination>
             </el-col>
         </div>
@@ -191,9 +189,16 @@ export default {
             isStatisticsShow: false, // 
             stuStatisticsList: [],  // 学生未评分列表
             isChangInputShow: '-99',  // 
+            teaInfo: '', // 教师信息
         }
     },
     methods: {
+
+        handleCurrentChange (val) {  // 分页切换
+            console.log(val)
+            this.prPage.pageNum = val
+            this.getPerformanceList()
+        },
         addScore () {  // 添加绩效分
             if (this.addPrInfo.score == '') {
                 this.tips('请输入评分', 'error');
@@ -403,10 +408,6 @@ export default {
                 return
             }
         },
-        handleCurrentChange (vla) {  // 分页切换
-            this.prPage = val;
-            this.getPerformanceList();
-        },
         getPerformanceList () {  // 根据班级 classUUID 获取学生绩效分
             
             console.log(this.prDate)
@@ -484,7 +485,7 @@ export default {
             })
         },
         getGradeList () { // 获取年级列表
-            this.$server.getAllGeadeList().then((res) => {
+            this.$server.getGradeListByteaUUID(this.teaInfo).then((res) => {
                 this.gradeList = res
                 console.log(res)
             }).catch((err) => {
@@ -499,6 +500,8 @@ export default {
         }
     },
     created () {
+        // 获取教师信息
+        this.teaInfo = JSON.parse(localStorage.getItem('user')).teacher
         // 获取年级列表
         this.getGradeList()
     }

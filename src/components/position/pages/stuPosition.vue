@@ -199,7 +199,7 @@ export default {
             },
             gradeList:[],  // 年级列表
             gradeName: '', // 年级名称
-
+            teaInfo: {}, // 教师信息
         }
     },
     methods: {
@@ -217,7 +217,7 @@ export default {
             })
         },
         getGeadeList () {  // 获取年级列表
-            this.$server.getAllGeadeList().then((res) => {
+            this.$server.getGradeListByteaUUID(this.teaInfo).then((res) => {
                 console.log(res)
                 this.gradeList = res
             }).catch((err) => {
@@ -344,7 +344,8 @@ export default {
 
         },
         handleCurrentChange (val) {  // 分页切换
-            this.stuListPage.pageNum = val
+            console.log(val)
+            this.stuListInfo.pageNum = val
             this.classCheck()
         },
         getPosList () {  // 获取职位列表
@@ -383,10 +384,10 @@ export default {
         }
     },
     created () {
+        // 获取教师信息
+        this.teaInfo = JSON.parse(localStorage.getItem('user')).teacher
         // 获取年级列表
         this.getGeadeList()
-        // 班级列表
-        //this.getClassList()
         // 全部职位列表
         this.getPosList()
     }
