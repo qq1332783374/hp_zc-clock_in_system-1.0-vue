@@ -93,7 +93,7 @@ export default {
         },
         getGradeListByTeaUUID () {   // 通过辅导员id获取所带的年级
 
-            this.$server.getGradeList(this.teaInfo).then((res) => {
+            this.$server.getGradeListByteaUUID(this.teaInfo).then((res) => {
                 console.log(res)
                 this.gradeList = res
             }).catch((err) => {
@@ -110,8 +110,7 @@ export default {
     },
     created () {
         // 获取教师信息
-        this.teaInfo.teaName = 'test1'
-        this.teaInfo.teaUUID = '7c84fc519f174f578332998cb1e1a7c8'
+        this.teaInfo = JSON.parse(localStorage.getItem('user')).teacher
 
         // 获取辅导员所带的年级
         this.getGradeListByTeaUUID()

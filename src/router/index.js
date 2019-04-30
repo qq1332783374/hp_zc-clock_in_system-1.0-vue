@@ -72,7 +72,7 @@ export default new Router({
       },
       children: [
         {path: 'stuClass', name: '班级管理', component: stuClass, meta: {title: '班级管理'}},
-        {path: 'teaClass', name: '辅导员班级管理', component: teaClass, meta: {title: '辅导班级管理'}}
+        {path: 'teaClass', name: '辅导员班级管理', component: teaClass, meta: {title: '辅导员班级管理'}}
       ]
     },
     {
