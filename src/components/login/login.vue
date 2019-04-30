@@ -125,7 +125,7 @@ export default {
 .login {
     width: 100%;
     height: 100%;
-    background-image: url("../../../static/bg.jpeg");
+    background-image: url("https://www.tanshangbiao.cn/project/images/bg-3.jpeg");
     background-color: rgba(0, 0, 0, 0.55);
     display: flex;
     justify-content: center;

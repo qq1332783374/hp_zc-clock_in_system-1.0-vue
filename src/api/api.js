@@ -5,7 +5,7 @@ import { POINT_CONVERSION_HYBRID } from 'constants';
 // http requser 拦截器
 axios.interceptors.request.use((config) => {
     // token 配置
-    
+
     config.headers = {
         'token': sessionStorage.getItem('token')
     }
@@ -161,7 +161,7 @@ export const server = {
      * method get 
      * 接口地址 /class/get/grade
      */
-    getGradeList (paramsObj) {
+    getGradeListByteaUUID (paramsObj) {
         return get('/class/get/grade?teaUUID=' + paramsObj.teaUUID)
     },
     /**

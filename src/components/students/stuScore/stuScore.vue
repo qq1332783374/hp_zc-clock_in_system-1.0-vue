@@ -1,5 +1,5 @@
 <template>
-    <div class="stuCcore">
+    <div class="stuScore">
         <div class="header">
             <el-select v-model="gradeName" style="margin-right: 15px;" placeholder="请选择年级" @change="getClassList">
                 <el-option v-for="(item, index) in gradeList" :key="index" :label="item.grade+'级'" :value="item.grade"></el-option>
@@ -17,12 +17,12 @@
                 style="margin-right: 15px;" 
                 >
             </el-date-picker>
-            <el-tooltip class="item" effect="dark" content="统计上月情况" placement="bottom">
+            <el-tooltip class="item" effect="dark" content="统计上月情况" placement="right" v-model="hoverHide">
                 <el-button type="primary" :disabled="isStatisticsDis" @click="statistics()">统计</el-button>
             </el-tooltip>
         </div>
         <div class="main">
-            <el-table
+            <!-- <el-table
                 :data="prList"
                 style="width: 100%;"
                 highlight-current-row
@@ -38,16 +38,46 @@
                         <el-button type="primary" size="mini" @click="handleUpdatePr(scope.$index, scope.row)">调整绩效分</el-button>
                     </template>
                 </el-table-column>
-            </el-table>
+            </el-table> -->
+            <table class="my-table">
+                <thead>
+                    <tr>
+                        <td>学号</td>
+                        <td>姓名</td>
+                        <td>绩效分</td>
+                        <td>操作</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item, index) in prList" :key="index">
+                        <td>
+                            <span>{{item.stuNo}}</span>
+                        </td>
+                        <td>
+                            <span>{{item.stuName}}</span>
+                        </td>
+                        <td>
+                            <span v-if="isChangInputShow != index">{{item.score}}</span>
+                            <span v-else>
+                                <input  type="text" name="score" :placeholder="item.score"  maxlength="3" v-model="addPrInfo.score">
+                                <el-button size="mini" type="success" @click="addScore()"> <i class="el-icon-check"></i></el-button>
+                                <el-button size="mini" @click="closeAddInfo()"><i class="el-icon-close"></i></el-button>
+                            </span>
+                        </td>
+                        <td>
+                            <el-button type="success" size="mini" @click="changStu(index, item)">添加绩效分</el-button>
+                            <el-button type="primary" size="mini" @click="handleUpdatePr(index, item)">调整绩效分</el-button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
             <!-- 分页 -->
             <el-col :span="24">
                 <el-pagination
-                    background
-                    layout="prev, pager, next"
-                    :total="prPage.total"
-                    :page-size="prPage.pageSize"
                     @current-change="handleCurrentChange"
-                >
+                    :page-size="10"
+                    layout="prev, pager, next, jumper"
+                    :total='prPage.total'>
                 </el-pagination>
             </el-col>
         </div>
@@ -126,9 +156,10 @@
 
 <script>
 export default {
-    name: 'stuCcore',
+    name: 'stuScore',
     data () {
         return {
+            hoverHide: true,
             isLoading: false,
             gradeName:'', // 年级
             gradeList: [],  // 年级列表
@@ -157,9 +188,83 @@ export default {
             isStatisticsDis: true,  // 统计按钮
             isStatisticsShow: false, // 
             stuStatisticsList: [],  // 学生未评分列表
+            isChangInputShow: '-99',  // 
+            teaInfo: '', // 教师信息
         }
     },
     methods: {
+
+        handleCurrentChange (val) {  // 分页切换
+            console.log(val)
+            this.prPage.pageNum = val
+            this.getPerformanceList()
+        },
+        addScore () {  // 添加绩效分
+            if (this.addPrInfo.score == '') {
+                this.tips('请输入评分', 'error');
+                return;
+            } else if (this.addPrInfo.score > 100) {
+                this.tips('评分不能大于一百分', 'warning');
+                return;
+            } else if (this.addPrInfo.score < 0) {
+                this.tips('评分不能为负数', 'warning');
+                return;
+            } else {
+                console.log(this.addPrInfo);
+                this.$loading({
+                    lock: true,
+                    text: 'Loading'
+                });
+
+                let params = new URLSearchParams
+                params.append('stuUUID', this.addPrInfo.stuUUID);
+                params.append('score', this.addPrInfo.score);
+                params.append('createTime', this.addPrInfo.createTime);
+
+                this.$server.addPerformanceScore(params).then((res) => {
+                    console.log(res)
+                    if (res.status) {
+                        this.tips('添加成功', 'success');
+                        this.$loading().close();
+                        this.getPerformanceList();
+                        this.isAddPrShow = false;
+
+                        this.isChangInputShow = -99;
+                    } else {
+                        this.tips('添加失败', 'error');
+                        this.$loading().close();
+                        this.getPerformanceList();
+                        this.isAddPrShow = false;
+
+                        this.isChangInputShow = -99;
+                    }
+                    this.addPrInfo.stuUUID = '';
+                    this.addPrInfo.score = '';
+                    this.addPrInfo.createTime = '';
+                    this.isChangInputShow = -99;
+                }).catch((err) => {
+                    console.log(err)
+                })
+
+            }
+        },
+        closeAddInfo () {
+            this.isChangInputShow = -99;
+        },
+        changStu (index, item) {
+            console.log(item)
+            if (item.score == "暂无评分,请进行评分") {
+                this.isChangInputShow = index;
+                this.addPrInfo.stuUUID = item.stuUUID
+                this.addPrInfo.createTime = this.prDate + '-01'
+
+            } else {
+                this.tips('该学生已经评分', 'success');
+                this.isChangInputShow = -99;
+                return
+            }
+            
+        },
         downWageInfo () {  // 下载工资信息
             console.log(this.classUUID)
             location.href = "http://192.168.22.46/statistics/statistics/"+this.classUUID
@@ -303,10 +408,6 @@ export default {
                 return
             }
         },
-        handleCurrentChange (vla) {  // 分页切换
-            this.prPage = val;
-            this.getPerformanceList();
-        },
         getPerformanceList () {  // 根据班级 classUUID 获取学生绩效分
             
             console.log(this.prDate)
@@ -384,7 +485,7 @@ export default {
             })
         },
         getGradeList () { // 获取年级列表
-            this.$server.getAllGeadeList().then((res) => {
+            this.$server.getGradeListByteaUUID(this.teaInfo).then((res) => {
                 this.gradeList = res
                 console.log(res)
             }).catch((err) => {
@@ -399,6 +500,8 @@ export default {
         }
     },
     created () {
+        // 获取教师信息
+        this.teaInfo = JSON.parse(localStorage.getItem('user')).teacher
         // 获取年级列表
         this.getGradeList()
     }
@@ -415,5 +518,16 @@ export default {
     color: #666;
     margin-bottom: 15px;
 }
-
+.my-table {
+    width: 100%;
+    background: #fff;
+}
+.my-table thead tr td {
+    font-weight: bold;
+    color: #666;
+}
+.my-table tr td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
 </style>

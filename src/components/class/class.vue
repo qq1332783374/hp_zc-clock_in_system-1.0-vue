@@ -74,7 +74,7 @@
             <div class="content">
                 <el-form ref="form" label-width="80px">
                     <el-form-item label="年级">
-                        <el-input v-model="addClassInfo.grade" placeholder="请输年级如：2017"></el-input>
+                        <el-input v-model="addClassInfo.grade" placeholder="请输年级如：2017" disabled></el-input>
                     </el-form-item>
                     <el-form-item label="班级">
                         <el-input v-model="addClassInfo.className" placeholder="请输入班级如：17前端"></el-input>
