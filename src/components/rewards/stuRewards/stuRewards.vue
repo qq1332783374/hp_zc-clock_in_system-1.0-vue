@@ -289,16 +289,16 @@ export default {
       },
         isClassUUID() {
 
-        const parms = {
-          currentPage: 1
-        }
-        this.$server.isClassUUID(parms).then((res) => {
-          console.log('获取classUUID')
-          console.log(res.list)
-          this.classUUID = res.list
-        }).catch((err) => {
-          console.log(err)
-        })
+        // const parms = {
+        //   currentPage: 1
+        // }
+        // this.$server.isClassUUID(parms).then((res) => {
+        //   console.log('获取classUUID')
+        //   console.log(res.list)
+        //   this.classUUID = res.list
+        // }).catch((err) => {
+        //   console.log(err)
+        // })
       },
       getAward() { //获取下拉列表数据
         console.log('获取下拉列表数据')
