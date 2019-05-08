@@ -223,28 +223,28 @@
 
         }
         this.$server.getAward(parms).then((res) => {
-          console.log(res)
+          //console.log(res)
           this.classify = res
           this.classify2 = res
-          console.log(this.classify)
+          //console.log(this.classify)
         }).catch((err) => {
           console.log(err)
         })
       },
       isClassify(index) { //下拉列表选择
-        console.log(this.classify[index].scID)
+        //console.log(this.classify[index].scID)
         const parms = {
           pagesNum: this.classify[index].scID
         }
         this.$server.isClassify(parms).then((res) => {
-          console.log(res)
+          //console.log(res)
           this.tableData = res
         }).catch((err) => {
           console.log(err)
         })
       },
       isClassify2(index){
-        console.log(this.classify2[index].scID)
+        //console.log(this.classify2[index].scID)
         this.classifyscID = this.classify2[index].scID
       },
       addRegulations() { //添加赏罚条例按钮
@@ -274,7 +274,7 @@
           parms.append('sValue', this.formLabelAlign.sValue)
 
           this.$server.isaddRegulations(parms).then((res) => {
-            console.log(res)
+            //console.log(res)
             this.$message({
               message: '添加成功',
               type: 'success'
@@ -288,7 +288,7 @@
 
       },
       handleEdit(index, item) { //修改
-        console.log(item)
+        //console.log(item)
         this.formhandleEdit = item
         this.ishandleEdit = true
         this.formhandleEdit.sID = item.sID
@@ -313,7 +313,7 @@
           parms.append('sValue', this.formhandleEdit.sName)
 
           this.$server.isHandleEdit(parms).then((res) => {
-            console.log(res)
+            //console.log(res)
             this.$message({
             message: '修改成功',
             type: 'success'
@@ -328,12 +328,12 @@
 
       },
       isDetails(index, item) { //详情
-        console.log(item.sID)
+        //console.log(item.sID)
         const parms = {
           pagesNum: item.sID
         }
         this.$server.isDetails(parms).then((res) => {
-          console.log(res)
+          //console.log(res)
             this.infoDetails=true
             this.thisDetails =res
         }).catch((err) => {
@@ -364,7 +364,7 @@
         this.ishandleEdit = false
       },
       detailsInfo(){
-           this.infoDetails = false
+          this.infoDetails = false
       }
 
     },

@@ -174,7 +174,7 @@ export default {
             },
             prList: [],  // 绩效分
             isPr: false,
-            isAddPrShow: false, 
+            isAddPrShow: false,
             addPrInfo: {
                 stuUUID: '',
                 score: '',
@@ -186,16 +186,16 @@ export default {
                 perUUID: ''
             },
             isStatisticsDis: true,  // 统计按钮
-            isStatisticsShow: false, // 
+            isStatisticsShow: false, //
             stuStatisticsList: [],  // 学生未评分列表
-            isChangInputShow: '-99',  // 
+            isChangInputShow: '-99',  //
             teaInfo: '', // 教师信息
         }
     },
     methods: {
 
         handleCurrentChange (val) {  // 分页切换
-            console.log(val)
+            //console.log(val)
             this.prPage.pageNum = val
             this.getPerformanceList()
         },
@@ -210,7 +210,7 @@ export default {
                 this.tips('评分不能为负数', 'warning');
                 return;
             } else {
-                console.log(this.addPrInfo);
+                //console.log(this.addPrInfo);
                 this.$loading({
                     lock: true,
                     text: 'Loading'
@@ -222,7 +222,7 @@ export default {
                 params.append('createTime', this.addPrInfo.createTime);
 
                 this.$server.addPerformanceScore(params).then((res) => {
-                    console.log(res)
+                    //console.log(res)
                     if (res.status) {
                         this.tips('添加成功', 'success');
                         this.$loading().close();
@@ -252,7 +252,7 @@ export default {
             this.isChangInputShow = -99;
         },
         changStu (index, item) {
-            console.log(item)
+            //console.log(item)
             if (item.score == "暂无评分,请进行评分") {
                 this.isChangInputShow = index;
                 this.addPrInfo.stuUUID = item.stuUUID
@@ -263,10 +263,9 @@ export default {
                 this.isChangInputShow = -99;
                 return
             }
-            
         },
         downWageInfo () {  // 下载工资信息
-            console.log(this.classUUID)
+            //console.log(this.classUUID)
             location.href = "http://192.168.22.46/statistics/statistics/"+this.classUUID
         },
         statistics () {  // 统计
@@ -276,7 +275,7 @@ export default {
                 classUUID: this.classUUID
             };
             this.$server.lastMonStatistics(params).then((res) => {
-                console.log(res)
+                //console.log(res)
                 if (res.length != 0) {
                     res.forEach((item) => {
                         var obj = {
@@ -285,7 +284,7 @@ export default {
                         };
                         this.stuStatisticsList.push(obj);
                     })
-                    console.log(this.stuStatisticsList);
+                    //console.log(this.stuStatisticsList);
                 } else {
                     this.stuStatisticsList = res;
                     // 下载工资模板
@@ -319,7 +318,7 @@ export default {
                 params.append('perUUID', this.updatePrInfo.perUUID);
 
                 this.$server.updatePerformanceScore(params).then((res) => {
-                    console.log(res);   
+                    //console.log(res);
                     if (res.status) {
                         this.tips('调整成功', 'success');
                         this.$loading().close();
@@ -338,7 +337,7 @@ export default {
             }
         },
         handleUpdatePr (index, item) {
-            console.log(item)
+            //console.log(item)
             if (item.score == "暂无评分,请进行评分") {
                 this.tips('该学生尚未评分，请先进行评分', 'warning');
                 return;
@@ -350,7 +349,6 @@ export default {
             }
         },
         addPr () {  // 确定添加
-            
             if (this.addPrInfo.score == '') {
                 this.tips('请输入评分', 'error');
                 return;
@@ -364,7 +362,7 @@ export default {
                 this.tips('请选择日期', 'warning');
                 return;
             } else {
-                console.log(this.addPrInfo);
+                //console.log(this.addPrInfo);
                 this.$loading({
                     lock: true,
                     text: 'Loading'
@@ -376,7 +374,7 @@ export default {
                 params.append('createTime', this.addPrInfo.createTime);
 
                 this.$server.addPerformanceScore(params).then((res) => {
-                    console.log(res)
+                    //console.log(res)
                     if (res.status) {
                         this.tips('添加成功', 'success');
                         this.$loading().close();
@@ -397,8 +395,7 @@ export default {
             }
         },
         handleAddPr (index, item) {  // 添加绩效分
-            console.log(item)
-            
+            //console.log(item)
             if (item.score == "暂无评分,请进行评分") {
                 this.isAddPrShow = true
                 this.addPrInfo.stuUUID = item.stuUUID
@@ -409,8 +406,7 @@ export default {
             }
         },
         getPerformanceList () {  // 根据班级 classUUID 获取学生绩效分
-            
-            console.log(this.prDate)
+            //console.log(this.prDate)
             if (this.gradeName == '') {
                 this.tips('请先选择年级', 'warning');
                 this.prDate = '';
@@ -426,10 +422,10 @@ export default {
                     date: this.prDate,
                     pageNum: this.prPage.pageNum || 1
                 };
-                console.log(params)
+                //console.log(params)
                 this.isLoading = true;
                 this.$server.getPerformanceByClassUUID(params).then((res) => {
-                    console.log(res);
+                    //console.log(res);
                     // 统计btn
                     this.isStatisticsDis = false
 
@@ -441,8 +437,7 @@ export default {
                                 item.score = '暂无评分,请进行评分'
                             }
                         });
-                        
-                        console.log(this.prList)
+                        //console.log(this.prList)
                         this.prPage.total = res.total;
                         this.prPage.pages = res.pages;
                         this.prPage.pageSize = res.pageSize;
@@ -463,7 +458,7 @@ export default {
             };
         },
         getClassUUID () {
-            console.log(this.classUUID)
+            //console.log(this.classUUID)
             this.prDate = ''
             this.prList = []
             // 统计btn
@@ -472,13 +467,13 @@ export default {
         getClassList () {  // 获取班级列表
             this.prDate = ''
             this.prList = []
-            console.log(this.gradeName)
+            //console.log(this.gradeName)
             let params = {
                 grade: this.gradeName,
                 currentPage: 1
             }
             this.$server.getClassListByGrade(params).then((res) => {
-                console.log(res.list)
+                //console.log(res.list)
                 this.classList = res.list
             }).catch((err) => {
                 console.log(err)
@@ -487,7 +482,7 @@ export default {
         getGradeList () { // 获取年级列表
             this.$server.getGradeListByteaUUID(this.teaInfo).then((res) => {
                 this.gradeList = res
-                console.log(res)
+                //console.log(res)
             }).catch((err) => {
                 console.log(err)
             })

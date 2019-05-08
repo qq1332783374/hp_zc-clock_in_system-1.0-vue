@@ -157,7 +157,6 @@
         navigatepageNumsList:'',//分页列表
         isIndex:'',
         // currentPage3: 5,
-       
       }
 
     },
@@ -178,7 +177,7 @@
         }
         this.$server.handleCurrentChange(parms).then((res) => {
           console.log('获取学生信息')
-          console.log(res)
+          //console.log(res)
           this.stuInfo = res.list
           this.classID = this.classUUID1[this.isIndex].classUUID
           this.navigatepageNumsList=res.navigatepageNums
@@ -191,7 +190,7 @@
 
       studentlist() {
 
-        console.log('teaUUID') //7c84fc519f174f578332998cb1e1a7c8
+        //console.log('teaUUID') //7c84fc519f174f578332998cb1e1a7c8
         // localStorage.getItem('user');
         // this.teaUUID=JSON.parse(localStorage.getItem('user'));
         // console.log(this.teaUUID)
@@ -213,21 +212,21 @@
         
         this.$server.getGradeListByteaUUID(this.teaInfo).then((res) => {
           console.log('获取年级')
-          console.log(res)
+          //console.log(res)
           this.Grade = res
         }).catch((err) => {
           console.log(err)
         })
       },
       Gradeinfo(index) { //获取班级
-        console.log(this.classGrade)
+        //console.log(this.classGrade)
         const parms = {
           teaUUID: this.teaInfo.teaUUID,
           grade: this.classGrade
         }
         this.$server.Gradeinfo(parms).then((res) => {
           console.log('获取对应班级')
-          console.log(res)
+          //console.log(res)
           this.classUUID1 = res
         }).catch((err) => {
           console.log(err)
@@ -235,8 +234,7 @@
 
       },
       classinfo(index) {
-        
-        console.log('这里')
+        //console.log('这里')
         this.isIndex=index
         this.isClassid=this.classUUID1[index].classUUID
         // console.log(this.classUUID1[index].classUUID)
@@ -246,7 +244,7 @@
         }
         this.$server.classinfo(parms).then((res) => {
           console.log('获取学生信息')
-          console.log(res)
+          //console.log(res)
           this.stuInfo = res.list
           this.classID = this.classUUID1[index].classUUID
           this.navigatepageNumsList=res.navigatepageNums
@@ -258,8 +256,8 @@
         }).catch((err) => {
           console.log(err)
         })
-        console.log(index)
-        console.log(this.classUUID1[index].classUUID)
+        //console.log(index)
+        //console.log(this.classUUID1[index].classUUID)
       },
       isClassUUID() {
 
@@ -268,20 +266,20 @@
         }
         this.$server.isClassUUID(parms).then((res) => {
           console.log('获取classUUID')
-          console.log(res.list)
+          //console.log(res.list)
           this.classUUID = res.list
         }).catch((err) => {
           console.log(err)
         })
       },
       handleDelete(index, item) { // 编辑
-        console.log(item)
+        //console.log(item)
         const parms = {
           stuUUID: item.stuUUID
         }
         this.$server.handleDelete(parms).then((res) => {
           console.log('获取classUUID')
-          console.log(res.list)
+          //console.log(res.list)
 
         }).catch((err) => {
           console.log(err)
@@ -292,17 +290,17 @@
         this.isAmend = true
 
         this.formLabelAlign = item
-        console.log(this.formLabelAlign)
+        //console.log(this.formLabelAlign)
       },
       thisAmend() { //确定修改学生信息
 
-        console.log(this.classID)
-        console.log(this.formLabelAlign.email)
-        console.log(this.formLabelAlign.stuUUID)
-        console.log(this.formLabelAlign.stuName)
+        // console.log(this.classID)
+        // console.log(this.formLabelAlign.email)
+        // console.log(this.formLabelAlign.stuUUID)
+        // console.log(this.formLabelAlign.stuName)
         // if (this.isclassName == '') {
         //   this.$message('请选择班级');
-        // } else 
+        // } else
         if (this.formLabelAlign.stuName == '') {
           this.$message('请输入姓名');
         } else if (this.formLabelAlign.email == '') {
@@ -320,7 +318,7 @@
 
 
           this.$server.thisAmend(parms).then((res) => {
-            console.log(res)
+            //console.log(res)
             this.$message({
               message: '修改成功',
               type: 'success'
@@ -372,7 +370,7 @@
       // 获取教师信息
       this.teaInfo = JSON.parse(localStorage.getItem('user')).teacher
       console.log('老师id')
-      console.log(this.teaInfo.teaUUID)
+      //console.log(this.teaInfo.teaUUID)
 
       this.grade()
       this.studentlist()

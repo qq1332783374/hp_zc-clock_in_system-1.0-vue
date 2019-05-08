@@ -44,7 +44,7 @@ export default {
                 return
             } else if (this.loginInfo.password == '') {
                 this.tips('请输入密码', 'error')
-                return 
+                return
             } else {
 
                 let params = new URLSearchParams
@@ -52,7 +52,6 @@ export default {
                 params.append('password', this.loginInfo.password)
 
                 axios.post('/login', params).then((res) => {
-                    console.log(res)
                     if (res.data.status) {
                         this.tips('登录成功', 'success')
                         // token
@@ -73,27 +72,6 @@ export default {
                     console.log(err)
                 })
 
-                // this.$server.login(params).then((res) => {
-                //     console.log(res)
-                //     if (res.status) {
-                //         this.tips('登录成功', 'success')
-                //         // token
-                //         sessionStorage.setItem('token', res.token)
-                //         // 用户信息
-                //         // 到期时间转换
-                //         res.expiration ='token到期时间:'+ this.formatDate(res.expiration)
-                //         let user = {
-                //             expiration: res.expiration,
-                //             teacher: res.teacher
-                //         }
-                //         localStorage.setItem('user', JSON.stringify(user))
-                //         this.$router.push({path: '/index'})
-                //     } else {
-                //         this.tips('手机号码或者密码错误,请检查', 'error')
-                //     }
-                // }).catch((err) => {
-                //     console.log(err)
-                // })
             }
         },
         formatDate (value) {

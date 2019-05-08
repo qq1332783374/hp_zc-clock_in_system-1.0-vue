@@ -70,9 +70,9 @@ axios.interceptors.response.use((data) => {
  *  @returns { Promise }
  */
 
- export function get(url, params = {}) {
+ export function get(url, params) {
      return new Promise((resolve, rejects) => {
-         axios.get(url).then((res) => {
+         axios.get(url, {params: params}).then((res) => {
              resolve(res.data)
          }).catch((err) => {
              rejects(err)
@@ -294,6 +294,9 @@ export const server = {
      */
     lastMonStatistics (paramsObj) {
         return get('/statistics/checkIn/'+paramsObj.classUUID)
+    },
+    statisticsClassRecordInfo (paramsObj) {
+        return get('/stipulation/record/statistics', paramsObj)
     },
     // writer: 潘光亮
     /**

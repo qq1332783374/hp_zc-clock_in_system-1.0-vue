@@ -1,20 +1,23 @@
 <template>
   <div>
-    <!-- <el-select placeholder="请选择类型" class="isSelect" v-model="isclassName" style="margin-bottom: 10px;">
-      <el-option v-for="(item,index) in classUUID" :key="index" :value="item.className"
-        @click.native='classinfo(index)'>
-      </el-option>
-    </el-select> -->
-    <el-select placeholder="请选择年级" class="isSelect" v-model="classGrade" style="margin-bottom: 10px;">
-      <el-option v-for="(item,index) in Grade" :key="index" :value="item.grade" @click.native='Gradeinfo(index)'>
-      </el-option>
-    </el-select>
-    <!-- *********** -->
-    <el-select placeholder="请选择班级" class="isSelect" v-model="isclassName" style="margin-bottom: 10px;">
-      <el-option v-for="(item,index) in classUUID" :key="index" :value="item.className"
-        @click.native='classinfo(index)'>
-      </el-option>
-    </el-select>
+    <div class="header">
+
+      <el-select placeholder="请选择年级" class="isSelect" v-model="classGrade" style="margin-bottom: 10px;">
+        <el-option v-for="(item,index) in Grade" :key="index" :value="item.grade" @click.native='Gradeinfo(index)'>
+        </el-option>
+      </el-select>
+
+      <!-- *********** -->
+      <el-select placeholder="请选择班级" class="isSelect" v-model="isclassName" style="margin-bottom: 10px;">
+        <el-option v-for="(item,index) in classUUID" :key="index" :value="item.className"
+          @click.native='classinfo(index)'>
+        </el-option>
+      </el-select>
+
+      <el-button type="primary" @click="isDownRewardsShow = true">下载赏罚记录表格</el-button>
+
+    </div>
+
 
     <el-table :data="stuInfo" style="width: 100%">
       <el-table-column prop="className" label="班级">
@@ -128,12 +131,70 @@
         layout="prev, pager, next, jumper" :total='this.navigatepageNumsList.length*100'>
       </el-pagination>
     </div>
+
+    <el-dialog
+      title="下载赏罚记录表格"
+      :visible.sync="isDownRewardsShow"
+      width="30%"
+      :before-close="handleClose">
+      <div class="content">
+        <el-form label-width="80px">
+          <el-form-item label="年级选择">
+            <el-select placeholder="请选择年级" class="isSelect" v-model="downGrade" style="margin-bottom: 10px;">
+              <el-option v-for="(item,index) in Grade" :key="index" :value="item.grade" @click.native='getDownGradeInfo(item)'>
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="班级选择">
+            <el-select placeholder="请选择班级" class="isSelect" v-model="downRewardsInfo.classUUID" style="margin-bottom: 10px;">
+              <el-option v-for="(item,index) in downClasslist" :key="index" :value="item.classUUID" :label="item.className">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="赏罚选择">
+            <el-select placeholder="请选择赏罚类型" v-model="downRewardsInfo.flag">
+              <el-option label="赏" value="1"></el-option>
+              <el-option label="罚" value="0"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="开始时间">
+            <el-date-picker
+              v-model="downRewardsInfo.beginTime"
+              type="date"
+              placeholder="请选择赏罚开始日期"
+              value-format="yyyy-MM-dd">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="结束时间">
+            <el-date-picker
+              v-model="downRewardsInfo.endTime"
+              type="date"
+              placeholder="请选择赏罚结束日期"
+              value-format="yyyy-MM-dd">
+            </el-date-picker>
+          </el-form-item>
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="isDownRewardsShow = false">取 消</el-button>
+        <el-button type="primary" @click="downRewardsList()">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
   export default {
     data() {
       return {
+        isDownRewardsShow: false,  // 下载信息模态框
+        downGrade: '', // 年级
+        downClasslist: [],  // 班级
+        downRewardsInfo: {   // 下载赏罚信息
+          classUUID: '',  // 班级ID
+          flag: '',  // 赏罚类型  1：赏  0：罚
+          beginTime: '', // 赏罚开始时间
+          endTime: '', // 赏罚结束时间
+        },
         //时间
         pickerOptions: {
           //   disabledDate(time) {
@@ -197,12 +258,51 @@
       }
     },
     methods: {
+      errTips (_val, _type) {
+        this.$message({
+          message: _val,
+          type: _type
+        })
+      },
+      downRewardsList () {  // 下载
+
+        if (this.downGrade == '') {
+          this.errTips('请选择年级', 'warning');
+          return;
+        } else if (this.downRewardsInfo.classUUID == '') {
+          this.errTips('请选择班级', 'warning');
+          return;
+        } else if (this.downRewardsInfo.flag == '') {
+          this.errTips('请选择赏罚类型', 'warning');
+          return;
+        } else if (this.downRewardsInfo.beginTime == '') {
+          this.errTips('请选择起始时间', 'warning');
+          return;
+        } else if (this.downRewardsInfo.endTime == '') {
+          this.errTips('请选择结束时间', 'warning');
+          return;
+        } else {
+          console.log(this.downRewardsInfo)
+          window.location.href = `http://192.168.22.46/stipulation/record/statistics?classUUID=${this.downRewardsInfo.classUUID}&flag=${this.downRewardsInfo.flag}&beginTime=${this.downRewardsInfo.beginTime}&endTime=${this.downRewardsInfo.endTime}`
+        }
+      },
+      getDownGradeInfo (item) {  // 获取下载信息  年级
+        var params = {
+          teaUUID: this.teaInfo.teaUUID,
+          grade: item.grade
+        }
+        this.$server.getClassListByTeaUUID(params).then((res) => {
+          console.log(res)
+          this.downClasslist = res
+        }).catch((err) => {
+          console.log(err)
+        })
+      },
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
       },
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
-        console.log(val)
         this.navigatepageNums = val
         this.isClassid = this.classUUID[this.isIndex].classUUID
         // console.log(this.classUUID1[index].classUUID)
@@ -211,23 +311,18 @@
           pageNum: this.navigatepageNums
         }
         this.$server.handleCurrentChange(parms).then((res) => {
-          console.log('获取学生信息')
-          console.log(res)
+          // console.log('获取学生信息')
+          // console.log(res)
           this.stuInfo = res.list
           this.classID = this.classUUID1[this.isIndex].classUUID
           this.navigatepageNumsList = res.navigatepageNums
         }).catch((err) => {
           console.log(err)
         })
-        // console.log(this.isIndex)
-        // console.log(this.classUUID1[this.isIndex].classUUID)
       }, //分页
       grade() { //获取年级
-        //    const parms = {
-        //        teaUUID:'7c84fc519f174f578332998cb1e1a7c8'
-        // }
-        console.log('******')
-        console.log(this.teaInfo)
+        // console.log('******')
+        // console.log(this.teaInfo)
         this.$server.getGradeListByteaUUID(this.teaInfo).then((res) => {
           console.log('获取年级')
           console.log(res)
@@ -237,7 +332,7 @@
         })
       },
       Gradeinfo(index) { //获取班级
-        console.log(this.classGrade)
+        // console.log(this.classGrade)
         const parms = {
           teaUUID: this.teaInfo.teaUUID,
           grade: this.classGrade
@@ -258,8 +353,8 @@
           pageNum: this.navigatepageNums
         }
         this.$server.classinfo(parms).then((res) => {
-          console.log('获取学生信息')
-          console.log(res)
+          // console.log('获取学生信息')
+          // console.log(res)
           this.stuInfo = res.list
           this.classID = this.classUUID[index].classUUID
           this.navigatepageNumsList = res.navigatepageNums
@@ -271,8 +366,8 @@
         }).catch((err) => {
           console.log(err)
         })
-        console.log(index)
-        console.log(this.classUUID[index].classUUID)
+        // console.log(index)
+        // console.log(this.classUUID[index].classUUID)
       },
       isClassUUID() {
 
@@ -280,8 +375,8 @@
           currentPage: 1
         }
         this.$server.isClassUUID(parms).then((res) => {
-          console.log('获取classUUID')
-          console.log(res.list)
+          // console.log('获取classUUID')
+          // console.log(res.list)
           this.classUUID = res.list
         }).catch((err) => {
           console.log(err)
@@ -294,8 +389,7 @@
 
         }
         this.$server.getAward(parms).then((res) => {
-          console
-          console.log(res)
+          // console.log(res)
           this.classify = res
           console.log(this.classify)
         }).catch((err) => {
@@ -303,13 +397,13 @@
         })
       },
       isClassify(index) { //下拉列表选择
-        console.log(index)
-        console.log(this.classify[index].scID)
+        // console.log(index)
+        // console.log(this.classify[index].scID)
         const parms = {
           pagesNum: this.classify[index].scID
         }
         this.$server.isClassify(parms).then((res) => {
-          console.log(res)
+          //console.log(res)
           this.classform = res
         }).catch((err) => {
           console.log(err)
@@ -318,20 +412,16 @@
 
       isclassform(index) {
 
-        console.log(this.classform[index].sID)
+        //console.log(this.classform[index].sID)
         this.sID = this.classform[index].sID
       },
       addRecord(index, item) {
-        console.log(item)
+        //console.log(item)
         this.isAmend = true
         this.infoStu = item
-        console.log(this.infoStu.stuUUID)
+        //console.log(this.infoStu.stuUUID)
       },
       recordAdd() {
-        //   console.log(this.infoStu.stuUUID)
-        //   console.log(this.sID)
-        //   console.log(this.formLabelAlign.srName)
-        //   console.log(this.formLabelAlign.remark)
         if (this.columeType == '') {
           this.$message('请选择赏罚类型');
         } else if (this.columeForm == '') {
@@ -349,7 +439,7 @@
           parms.append('remark', this.formLabelAlign.remark)
 
           this.$server.recordAdd(parms).then((res) => {
-            console.log(res)
+            //console.log(res)
             this.$message({
               message: '添加成功',
               type: 'success'
@@ -364,7 +454,7 @@
 
       },
       inqRecord(index, item) { //查询赏罚记录信息
-        console.log(item)
+        //console.log(item)
         this.dialogVisible = true
         this.infoStu = item
       },
@@ -388,7 +478,7 @@
           parms.append('endTime', endTime)
 
           this.$server.inquireInfo(parms).then((res) => {
-            console.log(res)
+            //console.log(res)
             this.particulars = res
             if (this.particulars == '') {
               this.$message('无赏罚记录');
@@ -407,6 +497,7 @@
         this.value2 = ''
         this.radio = ''
         this.show = false
+        this.isDownRewardsShow = false
       },
       hidden() {
         this.isAmend = false
@@ -441,6 +532,10 @@
 
   .particulars {
     margin-top: 20px;
+  }
+
+  .header {
+    margin-bottom: 15px;
   }
 
 </style>

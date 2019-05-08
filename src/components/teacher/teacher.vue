@@ -5,7 +5,6 @@
                 <a href="http://192.168.22.46/teacher/download"><i class="iconfont icon-xiazai-"></i> 下载辅导员信息模板</a>
             </span>
             <span class="importTitle" @click="isImportFileShow = true"><i class="iconfont icon-shangchuan"></i> 导入辅导员信息</span>
-            
         </div>
         <div class="teaList">
             <el-row>
@@ -27,7 +26,7 @@
                         <template slot-scope="scope">
                             <el-button
                             size="mini"
-                             type="danger"
+                            type="danger"
                             @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
@@ -82,7 +81,7 @@ export default {
             })
             const formData = new FormData(this.$refs.upTeaFile)
             axios.post('/teacher/import', formData, this.headers).then((res) => {
-                console.log(res)
+                //console.log(res)
                 if (res.status) {
                     this.isImportFileShow = false
                     this.$message({
@@ -103,14 +102,14 @@ export default {
             })
         },
         handleDelete (index, item) {  // 删除
-            console.log(item)
+            //console.log(item)
             this.$confirm('此操作将永久删除该信息, 是否继续?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
                 this.$server.delTeaByteaUUID(item).then((res) => {
-                    console.log(res)
+                    //console.log(res)
                     if (res.status) {
 
                         this.$message({
@@ -121,17 +120,16 @@ export default {
                         this.getTeaList()
                     }
                 }).catch((err) => {
-                    console.log(err)
+                    //console.log(err)
                     this.$message.error('删除失败')
                     this.$loading().close()
                 })
-                
             }).catch(() => {
                 this.$message({
                     type: 'info',
                     message: '已取消删除'
-                });   
-                this.$loading().close()      
+                });
+                this.$loading().close()
             });
         },
         handleClose () {
@@ -140,7 +138,7 @@ export default {
         getTeaList () {
             this.isLoading = true
             this.$server.getTeaList().then((res) => {
-                console.log(res)
+                //console.log(res)
                 if (res.length != 0) {
                     this.isLoading = false
                     this.teacherInfoList = res

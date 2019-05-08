@@ -16,7 +16,7 @@
                 v-loading="isLoading"
                 class="my-table"
                 >
-                <el-table-column 
+                <el-table-column
                     label="班级"
                     prop="className"
                 />
@@ -190,7 +190,7 @@ export default {
             },
             innerVisible: false,
             posList: [],  // 全部职位列表
-            isAddPosShow: false,  
+            isAddPosShow: false,
             addNewPos: {
                 stuUUID: '',
                 postID: '',
@@ -204,13 +204,11 @@ export default {
     },
     methods: {
         getClassList () {  // 通过年级获取班级
-            console.log(this.gradeName)
             let params = {
                 grade: this.gradeName,
                 currentPage: 1
             }
             this.$server.getClassListByGrade(params).then((res) => {
-                console.log(res.list)
                 this.classList = res.list
             }).catch((err) => {
                 console.log(err)
@@ -218,14 +216,12 @@ export default {
         },
         getGeadeList () {  // 获取年级列表
             this.$server.getGradeListByteaUUID(this.teaInfo).then((res) => {
-                console.log(res)
                 this.gradeList = res
             }).catch((err) => {
                 console.log(err)
             })
         },
         upAddNewPos () {  // 添加职位
-            console.log(this.addNewPos)
             if (this.addNewPos.prName == '') {
                 this.tips('请输入变动信息', 'warning')
                 return
@@ -240,7 +236,6 @@ export default {
                 params.append('remark', this.addNewPos.remark)
 
                 this.$server.addStuNewPos(params).then((res) => {
-                    console.log(res)
                     if (res.status) {
                         this.innerVisible = false
                         this.isPosShow = false
@@ -275,7 +270,6 @@ export default {
 
         },
         updateChangePosInfo () {  // 职位升降
-            console.log(this.addStuPos)
 
             let params = new URLSearchParams
             params.append('stuUUID', this.addStuPos.stuUUID)
@@ -285,7 +279,6 @@ export default {
             params.append('remark', this.addStuPos.remark)
 
             this.$server.upOrDownStuPos(params).then((res) => {
-                console.log(res)
                 if (res.status) {
                     this.innerVisible = false
                     this.isPosShow = false
@@ -315,13 +308,11 @@ export default {
             })
         },
         changePos (index, item) {  // 修改职位
-            console.log(item)
             this.innerVisible = true
             this.addStuPos.stuUUID = item.stuUUID
 
             this.addStuPos.oldPostName = item.postName
             this.posList.forEach((foritem) => {
-                
                 if (foritem.postName == item.postName) {
                     this.addStuPos.oldPostID = foritem.postID
                 }
@@ -334,7 +325,6 @@ export default {
             this.isPosShow = true
             this.isLoading1 = true
             this.$server.getPosInfoBystuUUID(item).then((res) => {
-                console.log(res)
                 this.isLoading1 = false
                 this.stuPosList = res
 
@@ -344,13 +334,11 @@ export default {
 
         },
         handleCurrentChange (val) {  // 分页切换
-            console.log(val)
             this.stuListInfo.pageNum = val
             this.classCheck()
         },
         getPosList () {  // 获取职位列表
             this.$server.getPositionList().then((res) => {
-                console.log(res)
                 this.posList = res
             }).catch((err) => {
                 console.log(err)
@@ -359,7 +347,6 @@ export default {
         classCheck () {  // 根据班级获取学生列表
             this.isLoading = true
             this.$server.getStuClassByClassUUID(this.stuListInfo).then((res) => {
-                console.log(res)
                 if (res.list.length != 0) {
                     this.isLoading = false
                     this.stuList = res.list

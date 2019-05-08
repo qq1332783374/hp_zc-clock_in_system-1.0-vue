@@ -9,6 +9,9 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI)
 
+// 适配360浏览器
+import 'babel-polyfill'
+
 // vuex
 import store from './store/index'
 
@@ -51,7 +54,7 @@ function logOut () {
     alert('登录验证已过期，请重新登录')
     // 重置
     times = 3300
-  } 
+  }
 }
 setInterval(logOut, 1000)
 

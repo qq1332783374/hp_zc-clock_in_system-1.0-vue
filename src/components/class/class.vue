@@ -24,7 +24,7 @@
                 v-loading="isLoading"
                 class="my-table"
                 >
-                <el-table-column 
+                <el-table-column
                     label="年级"
                     prop="grade"
                 />
@@ -74,7 +74,7 @@
             <div class="content">
                 <el-form ref="form" label-width="80px">
                     <el-form-item label="年级">
-                        <el-input v-model="addClassInfo.grade" placeholder="请输年级如：2017" disabled></el-input>
+                        <el-input v-model="addClassInfo.grade" placeholder="请输年级如：2017"></el-input>
                     </el-form-item>
                     <el-form-item label="班级">
                         <el-input v-model="addClassInfo.className" placeholder="请输入班级如：17前端"></el-input>
@@ -149,7 +149,7 @@ export default {
     name: 'class',
     data () {
         return {
-            gradeList: [],  // 年级列表 
+            gradeList: [],  // 年级列表
             grade: '1',  // 年级
             classList: [], // 班级
             isLoading: false,
@@ -160,12 +160,12 @@ export default {
                 pageSize: 10,  // 页面显示条数
             },
             teaList: [],  // 获取辅导员列表
-            isAddClassShow: false, 
+            isAddClassShow: false,
             addClassInfo: {  // 添加班级信息
                 grade: '',
                 className: '',
                 teaUUID: ''
-            },  
+            },
             isChangeClassInfo: false,
             changeClassInfo: {  // 修改班级信息
                 classUUID: '',
@@ -184,14 +184,13 @@ export default {
         }
     },
     methods: {
-        importStuInfoFile () {  
+        importStuInfoFile () {
             this.$loading({
                 lock: true,
                 text: '上传中...'
             })
             const formData = new FormData(this.$refs.upStuFile)
             axios.post('student/import', formData, this.headers).then((res) => {
-                console.log(res)
                 if (res.status) {
                     this.isImportFileShow = false
                     this.tips('上传成功', 'success')
@@ -211,9 +210,9 @@ export default {
         changeClass () {  // 提交修改
             if (this.changeClassInfo.grade == '') {
                 this.tips('年级不能为空', 'warning')
-                return 
+                return
             } else if (this.changeClassInfo.className == '') {
-                 this.tips('班级名称不能为空', 'warning')
+                this.tips('班级名称不能为空', 'warning')
                 return
             } else {
 
@@ -224,12 +223,8 @@ export default {
                 params.append('teaUUID', this.changeClassInfo.teaUUID)
 
                 this.$server.upDateClassInfo(params).then((res) => {
-                    console.log(res)
-
                     this.tips('修改成功', 'success')
-                    
                     this.isChangeClassInfo = false
-
                     this.checkClass()
 
                 }).catch((err) => {
@@ -238,7 +233,6 @@ export default {
             }
         },
         handleEdit (index, item) {  // 修改班级信息
-            console.log(item)
             this.isChangeClassInfo = true
             this.changeClassInfo = item
 
@@ -247,7 +241,7 @@ export default {
             console.log(this.addClassInfo)
             if (this.addClassInfo.grade == '') {
                 this.tips('年级不能为空', 'warning')
-                return 
+                return
             } else if (this.addClassInfo.className == '') {
                 this.tips('班级名称不能为空', 'warning')
                 return
@@ -258,8 +252,6 @@ export default {
                 params.append('teaUUID', this.addClassInfo.teaUUID)
 
                 this.$server.addClassInfo(params).then((res) => {
-
-                    console.log(res)
                     this.tips('添加成功', 'success')
                     this.isAddClassShow = false
                     this.checkClass()
@@ -282,10 +274,9 @@ export default {
         },
 
         handleImport (index, item) {  // 导入相关班级的学生信息
-            console.log(item)
             this.isImportFileShow = true
             this.importStuInfo.classUUID = item.classUUID
-        }, 
+        },
 
         handleCurrentChange (val) {  // 分页切换
             this.classPageInfo.pageNum = val
@@ -298,10 +289,8 @@ export default {
                 this.getClassByGrade()
             }
         },
-        
         getTeaList () {  // 获取辅导员列表
             this.$server.getTeaList().then((res) => {
-                console.log(res)
                 this.teaList = res
             }).catch((err) => {
                 console.log(err)
@@ -315,8 +304,6 @@ export default {
                 currentPage: this.classPageInfo.pageNum || 1
             }
             this.$server.getClassListByGrade(params).then((res) => {
-                console.log(res)
-                console.log(res)
                 if (res.list.length != 0) {
                     this.isLoading = false
                     this.classList = res.list
@@ -330,7 +317,6 @@ export default {
                     this.classList = res.list
                 }
             }).catch((err) => {
-                console.log(res)
                 this.isLoading = false
             })
         },
@@ -339,9 +325,8 @@ export default {
             this.isLoading = true
             let params = {
                 currentPage: this.classPageInfo.pageNum || 1
-            }   
+            }
             this.$server.getClassList(params).then((res) => {
-                console.log(res)
                 if (res.list.length != 0) {
                     this.isLoading = false
                     this.classList = res.list
@@ -362,7 +347,6 @@ export default {
 
         getAllGrade () {  // 获取全部年级
             this.$server.getAllGeadeList().then((res) => {
-                console.log(res)
                 this.gradeList = res
             }).catch((err) => {
                 console.log(err)

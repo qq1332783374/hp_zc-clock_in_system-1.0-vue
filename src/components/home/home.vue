@@ -105,14 +105,12 @@ export default {
                     lock: true,
                     text: 'Loading'
                 });
-                console.log(this.changePwdInfo)
                 let parmas = new URLSearchParams;
                 parmas.append('telephone', this.changePwdInfo.telephone);
                 parmas.append('newPassword', this.changePwdInfo.newPassword);
                 parmas.append('oldPassword', this.changePwdInfo.oldPassword);
 
                 this.$server.updatePassword(parmas).then((res) => {
-                    console.log(res)
                     if (res.status) {
                         this.tips('修改成功，请重新登录', 'success');
                         this.isChangPwdShow = false;
@@ -132,7 +130,6 @@ export default {
         },
         handlechangePwd () {  // 修改密码
             this.isChangPwdShow = true
-            console.log(this.userInfo)
             this.changePwdInfo.telephone = this.userInfo.teacher.telephone
 
         },
@@ -151,7 +148,6 @@ export default {
                 this.$router.push({path: '/login'})
 
             }).catch(() => {
-                  
             });
         },
         tips (_val, _type) {

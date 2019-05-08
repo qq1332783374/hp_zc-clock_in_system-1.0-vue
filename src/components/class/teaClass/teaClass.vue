@@ -15,7 +15,7 @@
                 v-loading="isLoading"
                 class="my-table"
                 >
-                <el-table-column 
+                <el-table-column
                     label="年级"
                     prop="grade"
                 />
@@ -63,14 +63,12 @@ export default {
     methods: {
         getTeaList () {  // 获取辅导员列表
             this.$server.getTeaList().then((res) => {
-                console.log(res)
                 this.teaList = res
             }).catch((err) => {
                 console.log(err)
             })
         },
         getStuListByTea_grade () {  // 通过辅导员 id 和年级 获取班级
-            
             let params = {
                 teaUUID: this.teaInfo.teaUUID,
                 grade: this.grade
@@ -78,7 +76,6 @@ export default {
 
             this.isLoading = true
             this.$server.getClassListByTeaUUID(params).then((res) => {
-                console.log(res)
                 if (res.length != 0) {
                     this.isLoading = false
                     this.classList = res
@@ -94,7 +91,6 @@ export default {
         getGradeListByTeaUUID () {   // 通过辅导员id获取所带的年级
 
             this.$server.getGradeListByteaUUID(this.teaInfo).then((res) => {
-                console.log(res)
                 this.gradeList = res
             }).catch((err) => {
                 console.log(err)

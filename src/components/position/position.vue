@@ -72,7 +72,7 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="addCancel()">取 消</el-button>
-                 <el-button type="primary" @click="addPos()"  >确 定</el-button>
+                <el-button type="primary" @click="addPos()"  >确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -104,18 +104,17 @@ export default {
             console.log(this.addPosInfo)
             if (this.addPosInfo.postName == '') {
                  this.errTips('职位名称不能为空')
-                return 
+                return
             } else if (this.addPosInfo.postSubsidy == '') {
                 this.errTips('岗位补贴不能为空')
                 return
             } else {
 
-                let params = new URLSearchParams 
+                let params = new URLSearchParams
                 params.append('postName', this.addPosInfo.postName)
                 params.append('postSubsidy', parseInt(this.addPosInfo.postSubsidy)*100)
 
                 this.$server.addPosInfo(params).then((res) => {
-                    console.log(res)
                     if (res.status) {
                         this.isAddPosShow = false
                         this.$message({
@@ -143,10 +142,9 @@ export default {
             this.addPosInfo.postSubsidy = ''
         },
         upadtePos () {  // 确定修改
-            console.log(this.upDatePosInfo)
             if (this.upDatePosInfo.postName == '') {
                 this.errTips('职位名称不能为空')
-                return 
+                return
             } else if (this.upDatePosInfo.postSubsidy == '') {
                 this.errTips('岗位补贴不能为空')
                 return
@@ -158,7 +156,6 @@ export default {
                 params.append('postID', this.upDatePosInfo.postID)
 
                 this.$server.upDatePositionList(params).then((res) => {
-                    console.log(res)
                     if (res.status) {
                         this.isUpDatePosShow = false
                         this.isChangePosInfo = true
@@ -180,7 +177,6 @@ export default {
             
         },
         handleCheck (index, item) {  // 查看
-            console.log(item)
             this.isUpDatePosShow = true
             this.upDatePosInfo = item
             
@@ -199,7 +195,6 @@ export default {
         getPosList () {  // 获取职位列表
             this.isLoading = true
             this.$server.getPositionList().then((res) => {
-                console.log(res)
                 if (res.length != 0) {
                     this.posList = res
                     this.isLoading = false
@@ -208,7 +203,7 @@ export default {
                 }
             }).catch((err) => {
                 console.log(err)
-                 this.isLoading =false
+                this.isLoading =false
             })
         }
     },
