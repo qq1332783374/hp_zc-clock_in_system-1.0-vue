@@ -252,6 +252,7 @@
         this.isRegulations = true
       },
       isaddRegulations() { //确定添加赏罚条例
+        var _this = this
         if (this.classify2 == '') {
           this.$message('请选择赏罚分类');
         } else if (this.formLabelAlign.sName == '') {
@@ -279,8 +280,9 @@
               message: '添加成功',
               type: 'success'
             });
-            this.getAward()
-            
+            _this.getAward()
+            this.isClassify()
+
           }).catch((err) => {
             console.log(err)
           })
@@ -310,7 +312,7 @@
           parms.append('sMoney', this.issMoney)
           parms.append('sRemark', this.formhandleEdit.sRemark)
           parms.append('sValue', this.formhandleEdit.sValue)
-          parms.append('sValue', this.formhandleEdit.sName)
+          parms.append('sName', this.formhandleEdit.sName)
 
           this.$server.isHandleEdit(parms).then((res) => {
             //console.log(res)
@@ -319,6 +321,7 @@
             type: 'success'
             });
             this.getAward()
+            this.isClassify()
 
           }).catch((err) => {
             console.log(err)

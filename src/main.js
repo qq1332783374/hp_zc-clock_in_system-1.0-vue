@@ -11,7 +11,7 @@ Vue.use(ElementUI)
 
 // 适配360浏览器
 import 'babel-polyfill'
-
+import 'url-search-params-polyfill'
 // vuex
 import store from './store/index'
 

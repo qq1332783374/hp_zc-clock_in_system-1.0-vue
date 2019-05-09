@@ -47,7 +47,7 @@ export default {
                 return
             } else {
 
-                let params = new URLSearchParams
+                var params = new URLSearchParams
                 params.append('telephone', this.loginInfo.telephone)
                 params.append('password', this.loginInfo.password)
 
