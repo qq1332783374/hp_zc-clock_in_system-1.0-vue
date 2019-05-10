@@ -130,6 +130,7 @@ export default new Router({
     {
       path: '/',
       name: '等级',
+      hidden: true,
       icon: 'iconfont icon-tubiaolunkuo-',
       component: home,
       meta: {

@@ -1,123 +1,111 @@
 <template>
   <div class="students">
-    <el-select placeholder="请选择年级" class="isSelect" v-model="classGrade" style="margin-bottom: 10px;">
-      <el-option v-for="(item,index) in Grade" :key="index" :value="item.grade" @click.native='Gradeinfo(index)'>
-      </el-option>
-    </el-select>
-    <!-- *********** -->
-    <el-select placeholder="请选择班级" class="isSelect" v-model="isclassName" style="margin-bottom: 10px;">
-      <el-option v-for="(item,index) in classUUID1" :key="index" :value="item.className"
-        @click.native='classinfo(index)'>
-      </el-option>
-    </el-select>
-    <el-table :data="stuInfo" style="width: 100%">
-      <el-table-column prop="className" label="班级">
-      </el-table-column>
-      <el-table-column prop="stuName" label="姓名">
-      </el-table-column>
-      <el-table-column prop="email" label="邮箱">
-      </el-table-column>
-      <el-table-column prop="levelName" label="level">
-      </el-table-column>
-      <el-table-column prop="stuNo" label="学号">
-      </el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
+    <div class="header">
+      <el-select v-model="gradeInfo.gradeName" style="margin-right: 15px;" placeholder="请选择年级" @change="getClassList">
+        <el-option v-for="(item, index) in gradeInfo.gradeList" :key="index" :label="item.grade+'级'"
+          :value="item.grade">
+        </el-option>
+      </el-select>
+      <el-select v-model="classInfo.classUUID" style="margin-right: 15px;" placeholder="请选择班级"
+        @change="getStuListByClassUUID">
+        <el-option v-for="(item, index) in classInfo.classList" :key="index" :label="item.className"
+          :value="item.classUUID">
+        </el-option>
+      </el-select>
+    </div>
+    <div class="main">
+      <el-table :data="stuListInfo.stuList" v-loading="stuListInfo.isLoading" style="width: 100%;">
+        <el-table-column label="班级" prop="className" />
+        <el-table-column label="学号" prop="stuNo" />
+        <el-table-column label="学生姓名" prop="stuName" />
+        <el-table-column label="性别" prop="sex" />
+        <el-table-column label="邮箱" prop="email" />
+        <el-table-column label="情况" prop="status" />
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">修改和查看</el-button>
+            <el-button size="mini" type="danger" disabled>禁用</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- 分页 -->
+      <el-col :span="24">
+        <el-pagination @current-change="handleCurrentChange" :page-size="10" layout="prev, pager, next, jumper"
+          :total='stuListInfo.stuPagsInfo.total'>
+        </el-pagination>
+      </el-col>
 
-          <el-button type="primary" @click="amend(scope.$index, scope.row)" size="mini" style="margin-top: 10px;">修改学生信息
-          </el-button>
-
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)" disabled
-            style="margin-top: 10px;">删除</el-button>
-
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <!-- 修改学生信息 -->
-    <el-dialog title="修改学生信息" :visible.sync="isAmend" width="30%" :before-close="handleAmend">
-      <div class="content">
-
-        <div style="margin: 20px;"></div>
-        <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
-          <el-form-item label="班级名称">
-            <el-select placeholder="请选择类型" class="isSelect" v-model="isclassName" disabled>
-              <el-option v-for="(item,index) in classUUID" :key="index" :value="item.className"
-                @click.native='isclassUUID(index)'>
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="名称">
-            <!-- :placeholder="isstuInfo.stuName" -->
-            <el-input v-model="formLabelAlign.stuName"  placeholder="请输入名字"></el-input>
-          </el-form-item>
-          <el-form-item label="邮箱">
-            <el-input v-model="formLabelAlign.email" placeholder="请输入邮箱"></el-input>
-          </el-form-item>
-          <!-- <el-form-item label="学生编号">
-                    <el-input v-model="formLabelAlign.stuUUID" :placeholder="isstuInfo.stuUUID"></el-input>
-                </el-form-item> -->
-
-        </el-form>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="isAmend = false">取 消</el-button>
-        <el-button type="primary" @click="thisAmend">确 定</el-button>
-      </span>
-    </el-dialog>
-    <!-- 职位升降 -->
-    <!-- <el-dialog
-            title="职位升降"
-            :visible.sync="isPosition"
-            width="30%"
-            :before-close="handPosition">
-            <div class="content">
-                职位升降
-            </div>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="isPosition = false">取 消</el-button>
-                <el-button type="primary" @click="isPosition = false">确 定</el-button>
-            </span>
-        </el-dialog> -->
-    <!-- 工资发放 -->
-    <!-- <el-dialog
-            title="工资发放"
-            :visible.sync="isSalary"
-            width="30%"
-            :before-close="handSalary">
-            <div class="content">
-                工资发放
-            </div>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="isSalary = false">取 消</el-button>
-                <el-button type="primary" @click="isSalary = false">确 定</el-button>
-            </span>
-        </el-dialog> -->
-    <!-- 学生奖罚操作 -->
-    <!-- <el-dialog
-            title="学生奖罚操作"
-            :visible.sync="isAward"
-            width="30%"
-            :before-close="handAward">
-            <div class="content">
-                学生奖罚操作
-            </div>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="isAward = false">取 消</el-button>
-                <el-button type="primary" @click="isAward = false">确 定</el-button>
-            </span>
-        </el-dialog> -->
-         <div class="block" v-if="stuInfoShow">
-    
-    <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-     
-      :page-size="100"
-      layout="prev, pager, next, jumper"
-      :total='this.navigatepageNumsList.length*100'>
-    </el-pagination>
-  </div>
+      <!-- 修改学生信息 -->
+      <el-dialog
+        title="修改和查看"
+        :visible.sync="stuListInfo.isShow"
+        top="5vh"
+        width="40%"
+        :before-close="handleClose">
+        <div class="content">
+          <el-form label-width="80px" ref="editStuInfoForm" :model="editStuInfo">
+            <el-form-item label="班级">
+              <el-select v-model="classInfo.classUUID" style="margin-right: 15px;" placeholder="请选择班级"
+                @change="getStuListByClassUUID" disabled>
+                <el-option v-for="(item, index) in classInfo.classList" :key="index" :label="item.className"
+                  :value="item.classUUID">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <input type="hidden" name="stuUUID" v-model="editStuInfo.stuUUID">
+            <el-form-item label="姓名">
+              <el-input name="stuName" v-model="editStuInfo.stuName"></el-input>
+            </el-form-item>
+            <el-form-item label="学号">
+              <el-input name="stuNo" v-model="editStuInfo.stuNo"></el-input>
+            </el-form-item>
+            <el-form-item label="身份证">
+              <el-input name="identity" v-model="editStuInfo.identity"></el-input>
+            </el-form-item>
+            <el-form-item label="邮箱">
+              <el-input name="email" v-model="editStuInfo.email"></el-input>
+            </el-form-item>
+            <el-form-item label="性别">
+              <el-input name="sex" v-model="editStuInfo.sex"></el-input>
+            </el-form-item>
+            <el-form-item label="本人电话">
+              <el-input name="phone" v-model="editStuInfo.phone"></el-input>
+            </el-form-item>
+            <el-form-item label="寝室号">
+              <el-input name="sroom" v-model="editStuInfo.sroom"></el-input>
+            </el-form-item>
+            <el-form-item label="政治面貌">
+              <el-input name="politics" v-model="editStuInfo.politics"></el-input>
+            </el-form-item>
+            <el-form-item label="民族">
+              <el-input name="nation" v-model="editStuInfo.nation"></el-input>
+            </el-form-item>
+            <el-form-item label="生源地">
+              <el-input name="birthplace" v-model="editStuInfo.birthplace"></el-input>
+            </el-form-item>
+            <el-form-item label="毕业院校">
+              <el-input name="graduateSchool" v-model="editStuInfo.graduateSchool"></el-input>
+            </el-form-item>
+            <el-form-item label="户口性质">
+              <el-input name="registered" v-model="editStuInfo.registered"></el-input>
+            </el-form-item>
+            <el-form-item label="家庭住址">
+              <el-input name="homeAddress" v-model="editStuInfo.homeAddress"></el-input>
+            </el-form-item>
+            <el-form-item label="家长姓名">
+              <el-input name="patriarchName" v-model="editStuInfo.patriarchName"></el-input>
+            </el-form-item>
+            <el-form-item label="家长电话">
+              <el-input name="patriarchphone" v-model="editStuInfo.patriarchphone"></el-input>
+            </el-form-item>
+          </el-form>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="stuListInfo.isShow = false">取 消</el-button>
+          <el-button type="primary" @click="upDateStuInfo()">确 定</el-button>
+        </span>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -126,262 +114,227 @@
     name: 'students',
     data() {
       return {
-        Grade: '',
-        classGrade: '', //年级
-        isclassName: '',
-        isEditShow: false,
-        isAmend: false,
-        isPosition: false,
-        isSalary: false,
-        isAward: false,
-        stuInfo: [
-
-        ],
-        stuInfoShow:false,
-        teaUUID:'',//辅导员id
-        isstuInfo: '',
-        labelPosition: 'right',
-        formLabelAlign: {
-          stuName: '',
-          email: '',
-          stuUUID: ''
+        teaInfo: {}, // 教师信息
+        gradeInfo: { // 年级信息
+          gradeName: '',
+          gradeList: []
         },
-        classUUID: [
-
-        ],
-        classUUID1: [],
-        classID: '',
-        teaInfo: {},  // 教师信息
-        isClassid:'',
-        navigatepageNums:1,//分页
-        navigatepageNumsList:'',//分页列表
-        isIndex:'',
-        // currentPage3: 5,
+        classInfo: { // 班级信息
+          classUUID: '',
+          classList: []
+        },
+        stuListInfo: {  // 学生列表
+          stuPagsInfo: { // 学生分页
+            pageNum: 1,
+            total: -99, // 总条数
+            pages: '', // 总页数
+            pageSize: 10, // 页面显示条数
+          },
+          stuList: [], // 学生信息
+          isLoading: false,
+          isShow: false,
+        },
+        editStuInfo: {  // 修改信息
+          stuUUID: '', // 学生ID
+          stuName: '', //姓名
+          stuNo: '', //学号
+          email: '', // 邮箱
+          sex: '', //性别 0=女 1=男
+          identity: '', //身份证号
+          politics: '', //政治面貌
+          nation: '', //民族
+          birthplace: '', //生源地
+          registered: '', //户口性质
+          homeAddress: '', //家庭地址
+          patriarchName: '', //家长姓名
+          patriarchphone: '', //家长手机
+          phone: '', //本人手机
+          graduateSchool: '', //毕业院校
+          sroom: '', //寝室号
+        }
       }
-
     },
     methods: {
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-      },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-        console.log(val)
-        console.log('零')
-        this.navigatepageNums = val
-        this.isClassid=this.classUUID1[this.isIndex].classUUID
-        // console.log(this.classUUID1[index].classUUID)
-        const parms = {
-          classUUID: this.classUUID1[this.isIndex].classUUID,
-          pageNum: this.navigatepageNums
-        }
-        this.$server.handleCurrentChange(parms).then((res) => {
-          console.log('获取学生信息')
-          //console.log(res)
-          this.stuInfo = res.list
-          this.classID = this.classUUID1[this.isIndex].classUUID
-          this.navigatepageNumsList=res.navigatepageNums
-        }).catch((err) => {
-          console.log(err)
-        })
-        console.log(this.isIndex)
-        console.log(this.classUUID1[this.isIndex].classUUID)
-      },//分页
+      upDateStuInfo () {
+        console.log(this.editStuInfo)
 
-      studentlist() {
+        let params = new URLSearchParams
 
-        //console.log('teaUUID') //7c84fc519f174f578332998cb1e1a7c8
-        // localStorage.getItem('user');
-        // this.teaUUID=JSON.parse(localStorage.getItem('user'));
-        // console.log(this.teaUUID)
-        //  const parms = {
+        params.append('stuName', this.editStuInfo.stuName)
+        params.append('stuNo', this.editStuInfo.stuNo)
+        params.append('email', this.editStuInfo.email)
+        params.append('sex', this.editStuInfo.sex)
+        params.append('politics', this.editStuInfo.politics)
+        params.append('nation', this.editStuInfo.nation)
+        params.append('birthplace', this.editStuInfo.birthplace)
+        params.append('registered', this.editStuInfo.registered)
+        params.append('homeAddress', this.editStuInfo.homeAddress)
+        params.append('patriarchName', this.editStuInfo.patriarchName)
+        params.append('patriarchphone', this.editStuInfo.patriarchphone)
+        params.append('phone', this.editStuInfo.phone)
+        params.append('graduateSchool', this.editStuInfo.graduateSchool)
+        params.append('sroom', this.editStuInfo.sroom)
+        params.append('stuUUID', this.editStuInfo.stuUUID)
+        params.append('identity', this.editStuInfo.identity)
 
-        // }
-        // this.$server.studentlist(parms).then((res) => {
-        //     console.log('获取学生信息')
-        //     console.log(res)
-        //     this.stuInfo=res
-        // }).catch((err) => {
-        //     console.log(err)
-        // })
-      },
-      grade() { //获取年级
-        //    const parms = {
-        //        teaUUID:'7c84fc519f174f578332998cb1e1a7c8'
-        // }
-        
-        this.$server.getGradeListByteaUUID(this.teaInfo).then((res) => {
-          console.log('获取年级')
-          //console.log(res)
-          this.Grade = res
-        }).catch((err) => {
-          console.log(err)
-        })
-      },
-      Gradeinfo(index) { //获取班级
-        //console.log(this.classGrade)
-        const parms = {
-          teaUUID: this.teaInfo.teaUUID,
-          grade: this.classGrade
-        }
-        this.$server.Gradeinfo(parms).then((res) => {
-          console.log('获取对应班级')
-          //console.log(res)
-          this.classUUID1 = res
-        }).catch((err) => {
-          console.log(err)
-        })
-
-      },
-      classinfo(index) {
-        //console.log('这里')
-        this.isIndex=index
-        this.isClassid=this.classUUID1[index].classUUID
-        // console.log(this.classUUID1[index].classUUID)
-        const parms = {
-          classUUID: this.classUUID1[index].classUUID,
-          pageNum: this.navigatepageNums
-        }
-        this.$server.classinfo(parms).then((res) => {
-          console.log('获取学生信息')
-          //console.log(res)
-          this.stuInfo = res.list
-          this.classID = this.classUUID1[index].classUUID
-          this.navigatepageNumsList=res.navigatepageNums
-          if(this.stuInfo==0){
-            this.stuInfoShow=false
-          }else{
-            this.stuInfoShow=true
+        this.$server.upDateStuDetailInfo(params).then((res) => {
+          console.log(res)
+          this.stuListInfo.isShow = false
+          this.getStuListByClassUUID()
+          if (res.status) {
+            this._tips('修改成功')
+          } else {
+            this._tips('修改失败')
+            return
           }
+        })
+      },
+      handleClose () {  // dialo 关闭
+
+        this.stuListInfo.isShow = false
+
+      },
+      handleEdit (index, item) {  // 修改
+        console.log(item)
+        this.stuListInfo.isShow = true
+
+        this.editStuInfo.stuUUID = item.stuUUID
+
+        // 获取学生详细信息
+        this.$server.getStuDetailInfo(this.editStuInfo).then((res) => {
+          console.log(res)
+          if (res.sex == 1) { // 男
+            res.sex = '男'
+          } else if (res.sex == 0) { // 女
+            res.sex = '女'
+          }
+          //
+          this.editStuInfo.stuUUID = res.stuUUID
+          this.editStuInfo.stuName = res.stuName
+          this.editStuInfo.identity = res.identity
+          this.editStuInfo.stuNo = res.stuNo
+          this.editStuInfo.email = res.email
+          this.editStuInfo.sex = res.sex
+          this.editStuInfo.politics = res.politics
+          this.editStuInfo.nation = res.nation
+          this.editStuInfo.birthplace = res.birthplace
+          this.editStuInfo.registered = res.registered
+          this.editStuInfo.homeAddress = res.homeAddress
+          this.editStuInfo.patriarchName = res.patriarchName
+          this.editStuInfo.patriarchphone = res.patriarchphone
+          this.editStuInfo.phone = res.phone
+          this.editStuInfo.graduateSchool = res.graduateSchool
+          this.editStuInfo.sroom = res.sroom
+
+
         }).catch((err) => {
           console.log(err)
         })
-        //console.log(index)
-        //console.log(this.classUUID1[index].classUUID)
       },
-      isClassUUID() {
+      handleCurrentChange(val) { // 分页切换
 
-        const parms = {
+        // 学生分页切换
+        this.stuListInfo.stuPagsInfo.pageNum = val
+
+      },
+      getStuListByClassUUID() { // 获取班级学生
+        this.stuListInfo.isLoading = true
+        let params = {
+          classUUID: this.classInfo.classUUID,
+          pageNum: this.stuListInfo.stuPagsInfo.pageNum || 1
+        }
+        this.$server.getStuListByClassUUID(params).then((res) => {
+          this.stuListInfo.isLoading = false
+
+          if (res.list.length != 0) {
+
+            // 处理性别
+            res.list.forEach((item) => {
+              if (item.sex == 1) { // 男
+                item.sex = '男'
+              } else if (item.sex == 0) { // 女
+                item.sex = '女'
+              }
+            })
+
+            // 学生情况
+            /**
+             * status 开除:0, 在校：1，  休学：2
+             */
+            res.list.forEach((item) => {
+              if (item.status == 0) {
+                item.status = '开除'
+              } else if (item.status == 1) {
+                item.status = '在校'
+              } else if (item.status == 2) {
+                item.status = '休学'
+              }
+            })
+
+            this.stuListInfo.stuList = res.list
+
+            // 分页
+            this.stuListInfo.stuPagsInfo.total = res.total
+            this.stuListInfo.stuPagsInfo.pages = res.pages
+            this.stuListInfo.stuPagsInfo.pageSize = res.pageSize
+
+          } else {
+            this.stuListInfo.stuList = res.list
+            this._tips('暂无数据')
+            return
+          }
+          console.log(res)
+        }).catch((err) => {
+          console.log(err)
+        })
+      },
+      getClassList() { // 获取班级列表
+
+        let params = {
+          grade: this.gradeInfo.gradeName,
           currentPage: 1
         }
-        this.$server.isClassUUID(parms).then((res) => {
-          console.log('获取classUUID')
-          //console.log(res.list)
-          this.classUUID = res.list
+
+        this.$server.getClassListByGrade(params).then((res) => {
+          this.classInfo.classList = res.list
         }).catch((err) => {
           console.log(err)
         })
       },
-      handleDelete(index, item) { // 编辑
-        //console.log(item)
-        const parms = {
-          stuUUID: item.stuUUID
-        }
-        this.$server.handleDelete(parms).then((res) => {
-          console.log('获取classUUID')
-          //console.log(res.list)
-
+      getGradeList() { // 获取年级列表
+        this.$server.getGradeListByteaUUID(this.teaInfo).then((res) => {
+          this.gradeInfo.gradeList = res
+          //console.log(res)
         }).catch((err) => {
           console.log(err)
         })
       },
-      amend(index, item) { //修改学生信息
-
-        this.isAmend = true
-
-        this.formLabelAlign = item
-        //console.log(this.formLabelAlign)
-      },
-      thisAmend() { //确定修改学生信息
-
-        // console.log(this.classID)
-        // console.log(this.formLabelAlign.email)
-        // console.log(this.formLabelAlign.stuUUID)
-        // console.log(this.formLabelAlign.stuName)
-        // if (this.isclassName == '') {
-        //   this.$message('请选择班级');
-        // } else
-        if (this.formLabelAlign.stuName == '') {
-          this.$message('请输入姓名');
-        } else if (this.formLabelAlign.email == '') {
-          this.$message('请输入email');
-          // }else if(this.formLabelAlign.stuUUID==''){
-          //     this.$message('请输入学生编号');
-        } else {
-          this.isAmend = false
-
-          var parms = new URLSearchParams
-          parms.append('stuName', this.formLabelAlign.stuName)
-          parms.append('classUUID', this.isClassid)
-          parms.append('email', this.formLabelAlign.email)
-          parms.append('stuUUID', this.formLabelAlign.stuUUID)
-
-
-          this.$server.thisAmend(parms).then((res) => {
-            //console.log(res)
-            this.$message({
-              message: '修改成功',
-              type: 'success'
-            });
-          }).catch((err) => {
-            console.log(err)
-          })
-        }
-
-      },
-      isposition(index, item) { //职位升降
-
-        this.isPosition = true
-      },
-      salary(index, item) { //工资发放
-
-        this.isSalary = true
-      },
-      award(index, item) { //学生奖罚操作
-
-        this.isAward = true
-
-      },
-      // isclassUUID(index) {
-      //   console.log(index)
-      //   console.log(this.classUUID[index].classUUID)
-      //   this.classID = this.classUUID[index].classUUID
-      // },
-
-
-      handleClose() {
-        this.isEditShow = false
-      },
-      handleAmend() {
-        this.isAmend = false
-      },
-      handPosition() {
-        this.isPosition = false
-      },
-      handSalary() {
-        this.isSalary = false
-      },
-      handAward() {
-        this.isAward = false
-      },
-
+      _tips(_val, _type) {
+        this.$message({
+          message: _val || '成功',
+          type: _type || 'success'
+        })
+      }
     },
     created() {
       // 获取教师信息
       this.teaInfo = JSON.parse(localStorage.getItem('user')).teacher
-      console.log('老师id')
-      //console.log(this.teaInfo.teaUUID)
-
-      this.grade()
-      this.studentlist()
-      this.isClassUUID()
-      
+      // 获取年级列表
+      this.getGradeList()
     }
-
   }
 
 </script>
 
 <style scoped>
+  .header {
+    box-shadow: 0px 2px 4px #ddd;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    color: #666;
+    margin-bottom: 15px;
+  }
 
 </style>

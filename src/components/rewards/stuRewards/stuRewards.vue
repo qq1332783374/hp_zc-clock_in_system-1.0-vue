@@ -99,8 +99,6 @@
             </el-date-picker>
           </div>
 
-
-
           <div class="block">
             <span class="demonstration">赏罚结束时间</span>
             <el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期"
@@ -109,7 +107,14 @@
           </div>
         </el-form>
         <div class="particulars" v-if="show">
-          赏罚详情
+          <div class="particulars-title">
+            <div>
+              赏罚详情
+            </div>
+            <div>
+              <span @click="downPerRewList()">下载个人赏罚记录</span>
+            </div>
+          </div>
           <div style="margin: 10px 0;" v-for="(item,index) in particulars" :key="index">
             <div>姓名：{{item.stuName}}</div>
             <div>时间：{{item.createTime}}</div>
@@ -228,8 +233,8 @@
         dialogVisible: false,
         labelPosition: 'right',
         formLabelAlign: {
-          srName: '',
-          remark: '',
+          srName: '无',
+          remark: '无',
           stuUUID: ''
         },
         classifyinfo: [],
@@ -254,10 +259,15 @@
         Grade: '',
         navigatepageNums: 1, //分页
         navigatepageNumsList: '', //分页列表
-        isIndex: ''
+        isIndex: '',
+        downPerRewInfo: {},  // 下载个人赏罚记录
       }
     },
     methods: {
+      downPerRewList () {  // 下载个人赏罚记录
+        console.log(this.downPerRewInfo)
+        window.location.href = `http://192.168.22.46/stipulation/record/statisticsByStuUUID?stuUUID=${this.downPerRewInfo.stuUUID}&stuName=${this.downPerRewInfo.stuName}&flag=${this.downPerRewInfo.flag}&beginTime=${this.downPerRewInfo.beginTime}&endTime=${this.downPerRewInfo.endTime}`
+      },
       errTips (_val, _type) {
         this.$message({
           message: _val,
@@ -470,6 +480,7 @@
         } else if (this.value2 == '') {
           this.$message('请选择结束时间');
         } else {
+
           this.isAmend = false
           var parms = new URLSearchParams
           parms.append('stuUUID', this.infoStu.stuUUID)
@@ -477,11 +488,18 @@
           parms.append('beginTime', beginTime)
           parms.append('endTime', endTime)
 
+          this.downPerRewInfo = {
+            stuUUID: this.infoStu.stuUUID,
+            stuName: this.infoStu.stuName,
+            flag: this.judge,
+            beginTime: beginTime,
+            endTime: endTime
+          }
+
           this.$server.inquireInfo(parms).then((res) => {
-            //console.log(res)
             this.particulars = res
             if (this.particulars == '') {
-              this.$message('无赏罚记录');
+              this.$message('无赏罚记录')
             } else {
               this.show = true
             }
@@ -537,5 +555,18 @@
   .header {
     margin-bottom: 15px;
   }
-
+  .particulars-title {
+    display: flex;
+  }
+  .particulars-title div {
+    flex: 1;
+  }
+  .particulars-title div:nth-child(2) {
+    text-align: right;
+    cursor: pointer;
+  }
+  .particulars-title div:nth-child(2):hover {
+    color: #2b99ff;
+    transition: all 0.5s;
+  }
 </style>

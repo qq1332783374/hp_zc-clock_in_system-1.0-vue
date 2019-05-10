@@ -103,8 +103,7 @@ export const server = {
      * writer: 谭上彪
      * blog: www.tanshangbiao.cn
      */
-    
-     /**
+    /**
       * token 登录
       * 接口地址： /login
       * 字段： telephone & password
@@ -113,7 +112,7 @@ export const server = {
     //     return post('/login', paramsObj)
     // },
     /**
-     * 
+     *
      * @param {Object} paramsObj 修改密码
      * 接口地址 /update/password
      * 字段 telephone newPassword oldPassword
@@ -122,19 +121,19 @@ export const server = {
         return post('/update/password', paramsObj)
     },
     /**
-     * 
+     *
      * @param {Object} paramsObj 获取辅导信息
      * methods get
-     * 
+     *
      */
     getTeaList (paramsObj) {
         return get('/teacher/list')
     },
     /**
-     * 
+     *
      * @param {Object} paramsObj 删除辅导员信息
-     * method get 
-     * 
+     * method get
+     *
      */
     delTeaByteaUUID (paramsObj) {
         return get('/teacher/delete/'+ paramsObj.teaUUID)
@@ -145,27 +144,27 @@ export const server = {
      */
     getAllGeadeList () {
         return get('/class/get/grade')
-    },  
+    },
     /**
-     * 
+     *
      * @param {Object} paramsObj 获取班级列表
-     * methods get 
+     * methods get
      * 字段 currentPage
      */
     getClassList (paramsObj) {
         return get('/class/query/class/' + paramsObj.currentPage)
     },
     /**
-     * 
+     *
      * @param {Object} paramsObj 通过teaUUID获取年级
-     * method get 
+     * method get
      * 接口地址 /class/get/grade
      */
     getGradeListByteaUUID (paramsObj) {
         return get('/class/get/grade?teaUUID=' + paramsObj.teaUUID)
     },
     /**
-     * 
+     *
      * @param {Object} paramsObj 通过教师id和年级id 获取学生列表
      * method get
      * 接口地址 /class/list/by/tea/
@@ -174,15 +173,15 @@ export const server = {
         return get('/class/list/by/tea/'+ paramsObj.teaUUID + '/' + paramsObj.grade)
     },
     /**
-     * 
+     *
      * @param {Object} paramsObj 通过年级查找班级
      * 接口地址 /class/list/by/{grade}/{currentPage}
      */
-    getClassListByGrade(paramsObj) {  
+    getClassListByGrade(paramsObj) {
         return get('/class/list/by/' + paramsObj.grade+'/'+ paramsObj.currentPage)
     },
     /**
-     * 
+     *
      * @param {Object} paramsObj 更新班级信息
      * method post
      */
@@ -190,10 +189,10 @@ export const server = {
         return post('/class/update/class', paramsObj)
     },
     /**
-     * 
+     *
      * @param {Object} paramsObj 添加班级
      * method post
-     * 
+     *
      */
     addClassInfo (paramsObj) {
         return post('/class/add/class', paramsObj)
@@ -205,7 +204,7 @@ export const server = {
         return get('/position/list')
     },
     /**
-     * 
+     *
      * @param {Object} paramsObj 更新职位信息
      * method post
      */
@@ -213,7 +212,7 @@ export const server = {
         return post('/position/update', paramsObj)
     },
     /**
-     * 
+     *
      * @param {Object} paramsObj 添加职位信息
      * method post
      */
@@ -221,9 +220,9 @@ export const server = {
         return post('/position/add', paramsObj)
     },
     /**
-     * 
+     *
      * @param {Object} paramsObj 根据班级获取学生列表
-     * method get 
+     * method get
      * 字段
      * classUUID
      * pageNum
@@ -233,9 +232,9 @@ export const server = {
         return get('/student/list/'+ paramsObj.classUUID + '/' + paramsObj.pageNum)
     },
     /**
-     * 
+     *
      * @param {Object} paramsObj 查看学生职位信息
-     * method get 
+     * method get
      * 字段 stuUUID
      * 接口地址 /position/getStuPositionInfo/{stuUUID}
      */
@@ -243,16 +242,16 @@ export const server = {
         return get('/position/getStuPositionInfo/' + paramsObj.stuUUID)
     },
     /**
-     * 
+     *
      * @param {Object} paramsObj 学生职位升降
-     * method post 
+     * method post
      * 接口地址 /position/record/update
      */
     upOrDownStuPos (paramsObj) {
         return post('/position/record/update', paramsObj)
     },
     /**
-     * 
+     *
      * @param {Object} paramsObj 给学生添加新职位
      * method post
      * 接口地址 /position/record/add
@@ -261,7 +260,7 @@ export const server = {
         return post('/position/record/add', paramsObj)
     },
     /**
-     * 
+     *
      * @param {Object} paramsObj 获取绩效分
      * 接口地址 /performance/get/stu/performance/by/{classUUID}/{date}/{pageNum}
      */
@@ -269,16 +268,16 @@ export const server = {
         return get('/performance/get/stu/performance/by/'+ paramsObj.classUUID+'/'+ paramsObj.date + '/' + paramsObj.pageNum)
     },
     /**
-     * 
+     *
      * @param {Object} paramsObj 给学生添加绩效分
      * method post
-     * 
+     *
      */
     addPerformanceScore (paramsObj) {
         return post('/performance/add', paramsObj)
     },
     /**
-     * 
+     *
      * @param {Object} paramsObj 调整绩效分
      * method post
      * 接口地址 /performance/update/score
@@ -287,7 +286,7 @@ export const server = {
         return post('/performance/update/score', paramsObj)
     },
     /**
-     * 
+     *
      * @param {Object} paramsObj 统计上个月的情况
      * method get
      * 接口地址 /statistics/checkIn/
@@ -295,15 +294,53 @@ export const server = {
     lastMonStatistics (paramsObj) {
         return get('/statistics/checkIn/'+paramsObj.classUUID)
     },
+    /**
+     *
+     * @param {Object} paramsObj 下载班级赏罚信息
+     * method get
+     * 接口 /stipulation/record/statistics
+     */
     statisticsClassRecordInfo (paramsObj) {
         return get('/stipulation/record/statistics', paramsObj)
     },
-    // writer: 潘光亮
+    /**
+     *
+     * @param {Object} paramsObj 获取学生列表
+     * method get
+     * 接口 /student/list/{classUUID}/{pageNum}
+     */
+    getStuListByClassUUID (paramsObj) {
+        return get('/student/list/' + paramsObj.classUUID + '/' + paramsObj.pageNum)
+    },
+    /**
+     *
+     * @param {Object} paramsObj 获取学生详细信息
+     * method get
+     * 接口 /student/get/{stuUUID}
+     */
+    getStuDetailInfo (paramsObj) {
+        return get('/student/get/' + paramsObj.stuUUID)
+    },
     /**
      * 
+     * @param {Object} paramsObj 更新学生详细信息
+     * method post
+     * 接口 /student/update
+     */
+    upDateStuDetailInfo (paramsObj) {
+        return post('/student/update', paramsObj)
+    },
+
+
+
+
+
+    // writer: 潘光亮
+    /**
+     *
      *  查看赏罚分类信息列表
      */
-    
+
     getAward (paramsObj) {//获取赏罚分类信息列表
         return get('/stipulation/classify/list')
     },
@@ -365,4 +402,4 @@ export const server = {
     adjustment(){  //等级调整
         return get('/level/update')
     }
-}   
+}

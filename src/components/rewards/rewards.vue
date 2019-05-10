@@ -41,22 +41,21 @@
         <span style="margin-left: 10px">{{ scope.row.sRemark }}</span>
       </template>
     </el-table-column> -->
-      <el-table-column label="赏罚金额" width="180">
+      <el-table-column label="赏罚金额(单位:元)" width="180">
         <template slot-scope="scope">
 
           <span style="margin-left: 10px">{{ scope.row.sMoney }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="加减分项" width="180">
+      <!-- <el-table-column label="加减分项" width="180">
         <template slot-scope="scope">
 
           <span style="margin-left: 10px">{{ scope.row.sValue }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-          
           <el-button type="success" size="mini" @click="isDetails(scope.$index, scope.row)">详情</el-button>
           <el-button type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
         </template>
@@ -84,12 +83,12 @@
           <el-form-item label="赏罚金额">
             <el-input v-model="formLabelAlign.sMoney" placeholder="请输入赏罚的金额"></el-input>
           </el-form-item>
-          <el-form-item label="规定说明">
-            <el-input v-model="formLabelAlign.sRemark" placeholder="请输入规定说明"></el-input>
+          <el-form-item label="赏罚说明">
+            <el-input v-model="formLabelAlign.sRemark" placeholder="请输入赏罚说明"></el-input>
           </el-form-item>
-          <el-form-item label="加减分项">
+          <!-- <el-form-item label="加减分项">
             <el-input v-model="formLabelAlign.sValue" placeholder="请输入加减分项"></el-input>
-          </el-form-item>
+          </el-form-item> -->
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -112,12 +111,12 @@
           <el-form-item label="赏罚金额">
             <el-input v-model="formhandleEdit.sMoney" placeholder="请输入赏罚金额"></el-input>
           </el-form-item>
-          <el-form-item label="规定说明">
-            <el-input v-model="formhandleEdit.sRemark" placeholder="请输入规定说明"></el-input>
+          <el-form-item label="赏罚说明">
+            <el-input v-model="formhandleEdit.sRemark" placeholder="请输入赏罚说明"></el-input>
           </el-form-item>
-          <el-form-item label="加减分项">
+          <!-- <el-form-item label="加减分项">
             <el-input v-model="formhandleEdit.sValue" placeholder="请输入加减分项"></el-input>
-          </el-form-item>
+          </el-form-item> -->
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -143,34 +142,14 @@
                     <el-form-item label="赏罚金额:">
                         {{thisDetails.sMoney}}
                     </el-form-item>
-                    <el-form-item label="加减分项:">
+                    <!-- <el-form-item label="加减分项:">
                         {{thisDetails.sValue}}
-                    </el-form-item>
-                    
+                    </el-form-item> -->
+
                     <div>
                         <p style="margin-left: 10px;">赏罚说明:</p>
                         <div style="text-indent:25px">{{thisDetails.sRemark}}</div>
                     </div>
-                    <!-- <div>
-                        <p>赏罚判定:</p>
-                        <div style="text-indent:25px">12112</div>
-                    </div>
-                    <div>
-                        <p>赏罚名称:</p>
-                        <div style="text-indent:25px">12112</div>
-                    </div>
-                    <div>
-                        <p>赏罚说明:</p>
-                        <div style="text-indent:25px">大家啊发货啦杀了卡萨达龙卷风垃圾飞机头两位嗷嗷哭安无倾开发安静而且还忘记看</div>
-                    </div>
-                    <div>
-                        <p>赏罚金额:</p>
-                        <div style="text-indent:25px">12112</div>
-                    </div>
-                    <div>
-                        <p>加减分项:</p>
-                        <div style="text-indent:25px">12112</div>
-                    </div> -->
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
@@ -205,15 +184,16 @@
           sName: '',
           sMoney: '',
           sRemark: '',
-          sValue: '',
+          sValue: '10',
         },
         formhandleEdit: {
           sID: '',
           sMoney: '',
           sRemark: '',
-          sValue: '',
+          sValue: '10',
           sName:''
         },
+        thisIndex:''
 
       }
     },
@@ -233,6 +213,7 @@
       },
       isClassify(index) { //下拉列表选择
         //console.log(this.classify[index].scID)
+        this.thisIndex=index
         const parms = {
           pagesNum: this.classify[index].scID
         }
@@ -281,7 +262,16 @@
               type: 'success'
             });
             _this.getAward()
-            this.isClassify()
+            this.columeType2='请选择赏罚分类'
+            this.formLabelAlign.sName = ''
+            this.formLabelAlign.sMoney = ''
+            this.formLabelAlign.sRemark = ''
+            this.formLabelAlign.sValue = ''
+            if(this.thisIndex==''){
+
+            }else{
+              this.isClassify(this.thisIndex)
+            }
 
           }).catch((err) => {
             console.log(err)
@@ -290,7 +280,7 @@
 
       },
       handleEdit(index, item) { //修改
-        //console.log(item)
+
         this.formhandleEdit = item
         this.ishandleEdit = true
         this.formhandleEdit.sID = item.sID

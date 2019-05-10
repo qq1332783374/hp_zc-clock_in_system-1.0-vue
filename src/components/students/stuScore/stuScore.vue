@@ -14,7 +14,7 @@
                 placeholder="选择月"
                 @change="getPerformanceList"
                 value-format="yyyy-MM"
-                style="margin-right: 15px;" 
+                style="margin-right: 15px;"
                 >
             </el-date-picker>
             <el-tooltip class="item" effect="dark" content="统计上月情况" placement="right" v-model="hoverHide">
@@ -22,23 +22,6 @@
             </el-tooltip>
         </div>
         <div class="main">
-            <!-- <el-table
-                :data="prList"
-                style="width: 100%;"
-                highlight-current-row
-                v-loading="isLoading"
-            >
-                <el-table-column label="学号" prop="stuNo"/>
-                <el-table-column label="姓名" prop="stuName"/>
-                <el-table-column label="绩效分" prop="score"/>
-
-                <el-table-column label="操作">
-                    <template slot-scope="scope">
-                        <el-button type="success" size="mini" @click="handleAddPr(scope.$index, scope.row)">添加绩效分</el-button>
-                        <el-button type="primary" size="mini" @click="handleUpdatePr(scope.$index, scope.row)">调整绩效分</el-button>
-                    </template>
-                </el-table-column>
-            </el-table> -->
             <table class="my-table">
                 <thead>
                     <tr>
